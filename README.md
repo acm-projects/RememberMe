@@ -49,6 +49,13 @@ Firebase 🔥
 [How to Use Git in Android Studio](https://www.youtube.com/watch?v=zqo08bQXU4Q&list=PLQkwcJG4YTCQTEk4J4btiOJBV0PhKjJVS)\
 [Git Commands Cheat Sheet](https://education.github.com/git-cheat-sheet-education.pdf)
 
+## Authors
+Erik Rodriguez - *Project Manager*
+Kara Ng - *Super Amazing Developer*
+Laya Vadapalli - *GOATED Developer*
+Safa Mohammed - *Prestige Developer*
+Samuel Preston - *Cracked Developer*
+
 ## Bee Movie Script 🐝
 According to all known laws of aviation, there is no way a bee should be able to fly.
 Its wings are too small to get its fat little body off the ground.
