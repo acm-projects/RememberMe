@@ -34,6 +34,14 @@ Have you ever met people at work, school, or networking events, and you happened
 
 
 ## Tech Stack 🧑‍💻
+Figma  👨‍🎨
+- What is Figma? 
+    - Figma connects everyone in the design process so teams can deliver better products, faster.
+- What are we using it for? 
+    - We will use it to design our user interface and user expereince.
+- Documentation
+    - https://www.figma.com/
+
 Flutter 🐦
 - What is Flutter?
     - Flutter is an open source framework by Google for building beautiful, natively compiled, multi-platform applications from a single codebase. 
