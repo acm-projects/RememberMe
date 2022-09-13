@@ -53,7 +53,7 @@ Firebase 🔥
 
 Kara Ng - *Super Amazing Developer* <br>
 Laya Vadapalli - *GOATED Developer* <br>
-Safa Mohammed - *Prestige Developer* <br>
+Safa Mohammed - *Master Prestige Developer* <br>
 Samuel Preston - *Cracked Developer* <br>
 
 Erik Rodriguez - *Project Manager* <br>
