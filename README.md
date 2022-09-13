@@ -82,6 +82,24 @@ Erik Rodriguez - *Project Manager* <br>
 Temitope Oladipo - *Industry Mentor* <br>
 Hotel - *Trivago* <br>
 
+## GitHub Cheat Sheet
+(Thanks Emily ^-^)
+
+General Use
+
+| Command | Description |
+| ------ | ------ |
+| cd "FIREUp" | Change directories over to our repository |
+| git branch | Lists branches for you |
+| git branch "branch name" | Makes new branch |
+| git checkout "branch name" | Switch to branch |
+| git checkout -b "branch name" | Same as 2 previous commands together |
+| git add . | Finds all changed files |
+| git commit -m "Testing123" | Commit with message |
+| git push origin "branch" | Push to branch |
+| git pull origin "branch" | Pull updates from a specific branch |
+
+
 ## Bee Movie Script 🐝
 According to all known laws of aviation, there is no way a bee should be able to fly.
 Its wings are too small to get its fat little body off the ground.
