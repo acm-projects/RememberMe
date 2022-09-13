@@ -41,9 +41,8 @@ Firebase 🔥
 [How to design a Mobile App using Figma](https://www.youtube.com/watch?v=PeGfX7W1mJk)\
 [Mobile app design inspiration](https://dribbble.com/shots/popular/mobile) \
 [Flutter in 100 seconds](https://www.youtube.com/watch?v=lHhRhPV--G0) \
-Flutter Software Development Kit Installation 
- - [MacOS](https://www.youtube.com/watch?v=hL7pkX1Pfko)
- - [Windows](https://youtu.be/tun0HUHaDuE)
+[Install Flutter in MacOS](https://www.youtube.com/watch?v=hL7pkX1Pfko)
+[Install Flutter in Windows](https://youtu.be/tun0HUHaDuE)
 <!-- end of the list -->
 [Firebase in 100 seconds](https://www.youtube.com/watch?v=vAoB4VbhRzM) \
 [Firebase with Flutter](https://www.youtube.com/watch?v=EXp0gq9kGxI&t=15s) \
