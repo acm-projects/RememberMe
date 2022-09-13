@@ -11,11 +11,20 @@ Have you ever met people at work, school, or networking events, and you happened
 
 ## MVP 🤝
 - User accounts <br>
+    - To have the ability to login with username & password
 - Ability to make cards <br>
+    - Cards will contains the information of the people you meet
+    - Cards may be edited as new information is obtained
 - Memory game <br>
+    - Memory games will allow users to study available cards given conditions. 
 - Categories <br>
+    - To put cards with similar attributes together
+    - One person can hold multiple categories
 - Search filter <br>
+    - To narrow down people based on information
 - Statistics with achievments <br>
+    - To encourage users to add people to their card deck
+    - Trophies may show up in a screen as certain goals are met
 
 ## Stretch Goals 🙆‍♂️
 - Ability to share your card with others 
