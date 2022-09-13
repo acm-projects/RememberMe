@@ -30,12 +30,16 @@ Flutter 🐦
     - Flutter is an open source framework by Google for building beautiful, natively compiled, multi-platform applications from a single codebase. 
 - What are we using it for?
     - RememeberMe to develop the user interface and end of our application and integrate our firebase backend
+- Documentation
+    - https://flutter.dev/
 
 Firebase 🔥
 - What is Firebase? 
     - Firebase is an app development platform that helps you build and grow apps and games users love. Backed by Google and trusted by millions of businesses around the world.
 - What are we using it for?
     - Firebase will be used as our backend services and as a database. We can create user accounts and store the cards for each user.
+- Documentation
+    - https://firebase.google.com/
 
 ## Useful Tutorials 💻
 [How to design a Mobile App using Figma](https://www.youtube.com/watch?v=PeGfX7W1mJk)\
