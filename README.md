@@ -59,7 +59,7 @@ Firebase 🔥
     - https://firebase.google.com/
 
 ## Useful Tutorials 💻
-[Git download](https://git-scm.com/)/
+[Git download](https://git-scm.com/)\
 [How to design a Mobile App using Figma](https://www.youtube.com/watch?v=PeGfX7W1mJk)\
 [Mobile app design inspiration](https://dribbble.com/shots/popular/mobile) \
 [Flutter in 100 seconds](https://www.youtube.com/watch?v=lHhRhPV--G0) \
