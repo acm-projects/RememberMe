@@ -24,7 +24,7 @@ Have you ever met people at work, school, or networking events, and you happened
 - Sync birthdays to Google Calendar 
 
 
-## Tech Stack 💻
+## Tech Stack 🧑‍💻
 Flutter 🐦
 - What is Flutter?
     - Flutter is an open source framework by Google for building beautiful, natively compiled, multi-platform applications from a single codebase. 
@@ -37,7 +37,7 @@ Firebase 🔥
 - What are we using it for?
     - Firebase will be used as our backend services and as a database. We can create user accounts and store the cards for each user.
 
-## Useful Tutorials
+## Useful Tutorials 💻
 [How to design a Mobile App using Figma](https://www.youtube.com/watch?v=PeGfX7W1mJk)\
 [Mobile app design inspiration](https://dribbble.com/shots/popular/mobile) \
 [Flutter in 100 seconds](https://www.youtube.com/watch?v=lHhRhPV--G0) \
@@ -49,8 +49,7 @@ Firebase 🔥
 [How to Use Git in Android Studio](https://www.youtube.com/watch?v=zqo08bQXU4Q&list=PLQkwcJG4YTCQTEk4J4btiOJBV0PhKjJVS)\
 [Git Commands Cheat Sheet](https://education.github.com/git-cheat-sheet-education.pdf)
 
-## Authors
-
+## Authors 📝
 Kara Ng - *Super Amazing Developer* <br>
 Laya Vadapalli - *GOATED Developer* <br>
 Safa Mohammed - *Master Prestige Developer* <br>
