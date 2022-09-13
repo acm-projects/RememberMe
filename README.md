@@ -50,11 +50,11 @@ Firebase 🔥
 [Git Commands Cheat Sheet](https://education.github.com/git-cheat-sheet-education.pdf)
 
 ## Authors
-Erik Rodriguez - *Project Manager*
-Kara Ng - *Super Amazing Developer*
-Laya Vadapalli - *GOATED Developer*
-Safa Mohammed - *Prestige Developer*
-Samuel Preston - *Cracked Developer*
+Erik Rodriguez - *Project Manager* <br>
+Kara Ng - *Super Amazing Developer* <br>
+Laya Vadapalli - *GOATED Developer* <br>
+Safa Mohammed - *Prestige Developer* <br>
+Samuel Preston - *Cracked Developer* <br>
 
 ## Bee Movie Script 🐝
 According to all known laws of aviation, there is no way a bee should be able to fly.
