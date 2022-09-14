@@ -99,6 +99,20 @@ General Use
 | git push origin "branch" | Push to branch |
 | git pull origin "branch" | Pull updates from a specific branch |
 
+## Estimated Timeline
+|   Week   |          Task(s)          |          Deliverables         |
+| -------- | ------------------------- | ----------------------------- |
+| 1        | Onboarding tasks          | Meet the team, set meeting dates and times, schedule a design day, finalize tech stack, start environment set-up. |
+| 2        | Wireframes and research| Finish up wireframes, practice apps with chosen tech stacks, practice git and github, final env. set-up |
+| 3        | Coding app screens and backend logic | Frontend: 30% of app pages, Backend: authenticaiton, build a dummy database to practice updating real time info|
+| 4        | Coding app screens and backend logic | Frontend: 70% of app pages, Backend: start incorporating database with frontend code |
+| 5        | Coding app screens and backend logic | Frontend: 100% of app screens, Backend: continue incorporating database with frontend code |
+| 6        | Frontend touch ups and backend integration | Frontend and backend should be working together to inegrate funcitonalities to create a functioning MVP |
+| 7        | Frontend and backend touchups | Polished MVP |
+| 8        | Stretch goals | If time permits |
+| 9        | Presentation and practice |decide order of presenters, style of slide deck, write down a script |
+| 10       | Finalize presentation and practice | N/A |
+| Presentation week! | Wow the judges! I believe in you :) | :blue_heart::blue_heart::blue_heart: |
 
 ## Bee Movie Script 🐝
 According to all known laws of aviation, there is no way a bee should be able to fly.
