@@ -22,7 +22,7 @@ Have you ever met people at work, school, or networking events, and you happened
     - One person can hold multiple categories
 - Search filter <br>
     - To narrow down people based on information
-- Statistics with achievments <br>
+- Statistics with achievements <br>
     - To encourage users to add people to their card deck
     - Trophies may show up in a screen as certain goals are met
 
