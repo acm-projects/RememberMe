@@ -80,7 +80,7 @@ Samuel Preston - *Cracked Developer* <br>
 
 Erik Rodriguez - *Project Manager* <br>
 Temitope Oladipo - *Industry Mentor* <br>
-Hotel - *Trivago* <br>
+
 
 ## GitHub Cheat Sheet ᛘ
 (Thanks Emily ^-^)
