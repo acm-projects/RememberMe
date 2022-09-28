@@ -8,7 +8,7 @@
 PRODUCT_NAME = rememberme
 
 // The application's bundle identifier
-PRODUCT_BUNDLE_IDENTIFIER = com.example.rememberme
+PRODUCT_BUNDLE_IDENTIFIER = co.acmutd.rememberme
 
 // The copyright displayed in application information
-PRODUCT_COPYRIGHT = Copyright © 2022 com.example. All rights reserved.
+PRODUCT_COPYRIGHT = Copyright © 2022 co.acmutd. All rights reserved.

@@ -1,0 +1,46 @@
+{
+  "project_info": {
+    "project_number": "436175933506",
+    "project_id": "rememberme-acm",
+    "storage_bucket": "rememberme-acm.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:436175933506:android:b3ae9d87e6b61d05799ddb",
+        "android_client_info": {
+          "package_name": "co.acmutd.rememberme"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "436175933506-15seb8kbv3mnups8rrodvatdrr64nsh5.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCDFnBN1W8hlQBOD7bWWbzQkfkQIj4qF7E"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "436175933506-15seb8kbv3mnups8rrodvatdrr64nsh5.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "436175933506-23dnrcat4098s2960k560thjuctn2l4a.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "co.acmutd.rememberme"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
