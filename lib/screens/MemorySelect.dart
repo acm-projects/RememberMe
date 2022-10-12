@@ -14,14 +14,27 @@ class MemorySelect extends StatefulWidget {
   State<MemorySelect> createState() => _MemorySelect();
 }
 
-
 class _MemorySelect extends State<MemorySelect> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      //STARTS WITH LOTS OF STUFF WITHIN SCAFFOLD!
         appBar: PreferredSize(
+          //WITHIN THE APPBAR, FIRSTLY DEALING WITH CHANGED SIZE
             preferredSize: Size.fromHeight(100.0),
             child: AppBar(
+              //HERE WE ADD A BACK BUTTON (CONNECT SCREEN LATER)
+              automaticallyImplyLeading: false,
+              leadingWidth: 100,
+              leading: ElevatedButton.icon(
+              onPressed: () => Navigator.of(context).pop(),
+              icon: const Icon(Icons.arrow_left, size: 45),
+              label: const Text(''),
+              style: ElevatedButton.styleFrom(
+              elevation: 0,
+              backgroundColor: Colors.transparent)),
+
+              //THIS ADDS THE TEXT IN THE APPBAR
               title: Text('Memory Games'),
               centerTitle: true,
               titleTextStyle: TextStyle(
@@ -29,6 +42,8 @@ class _MemorySelect extends State<MemorySelect> {
                   fontWeight: FontWeight.bold
               ),
               backgroundColor: Color.fromARGB(255, 253, 142, 84),
+
+              //THIS IS TO ADD THE SEARCH BUTTON ICON AND MAKE IT SHOW SEARCH BAR
               actions: [
                 IconButton(
                   onPressed: () {
@@ -44,8 +59,11 @@ class _MemorySelect extends State<MemorySelect> {
               ],
             )
         ),
+
+        //HERE THE BODY STARTS, MAKE INTO A COLUMN WITH CONTAINERS AND SUCH
         body: Column(
           children: <Widget>[
+            //THIS CONTAINER IS FOR THE "Decks" TEXT
             Container(
               margin: EdgeInsets.fromLTRB(0,30,0,0),
               child: Text(
@@ -57,6 +75,7 @@ class _MemorySelect extends State<MemorySelect> {
               ),
             ),
 
+            //THIS IS TO SET UP THE CAROUSEL
             CarouselSlider(
               options: CarouselOptions(
                 height: 200.0,
@@ -88,7 +107,7 @@ class _MemorySelect extends State<MemorySelect> {
               }).toList(),
             ),
 
-
+            //THIS CONTAINER IS FOR "Choose Game" TEXT
             Container(
               margin: EdgeInsets.fromLTRB(0,30,0,0),
               child: Text(
@@ -100,6 +119,9 @@ class _MemorySelect extends State<MemorySelect> {
               ),
             ),
 
+            //THIS IS FOR A TEXT BUTTON TO SELECT 'MATCHING GAME'
+
+            //CHANGE ON-PRESSED ACTION TO GO TO ANOTHER SCREEN
             Container(
               margin: EdgeInsets.all(25),
               child: TextButton(
@@ -119,6 +141,10 @@ class _MemorySelect extends State<MemorySelect> {
                 },
               ),
             ),
+
+            //THIS IS FOR A TEXT BUTTON TO SELECT 'QUESTION GAME'
+
+            //CHANGE ON-PRESSED ACTION TO LEAD TO ANOTHER SCREEN
             Container(
               margin: EdgeInsets.fromLTRB(25,0,25,0),
               child: TextButton(
@@ -147,6 +173,10 @@ class _MemorySelect extends State<MemorySelect> {
   }
 }
 
+
+//OUTSIDE OF SCAFFOLD:
+
+//THIS IS FOR THE CARDS ('ITEMS') LIST FOR THE CAROUSEL SLIDER
 int _currentIndex=0;
 List cardList=[
   Item1(),
@@ -162,6 +192,9 @@ List<T> map<T>(List list, Function handler) {
   return result;
 }
 
+//THIS IS TO MAKE ITEM1 (CARD ONE) IN CAROUSEL SLIDER
+
+//CHANGE ON-PRESSED ACTION TO LEAD TO ANOTHER SCREEN
 class Item1 extends StatelessWidget {
   const Item1({Key? key}) : super(key: key);
   @override
@@ -189,6 +222,9 @@ class Item1 extends StatelessWidget {
   }
 }
 
+//THIS IS TO MAKE ITEM2 (CARD 2) IN CAROUSEL
+
+//CHANGE ON-PRESSED ACTION TO LEAD TO ANOTHER SCREEN
 class Item2 extends StatelessWidget {
   const Item2({Key? key}) : super(key: key);
   @override
@@ -216,6 +252,9 @@ class Item2 extends StatelessWidget {
   }
 }
 
+//ITEM 3 (CARD 3) IN CAROUSEL
+
+//CHANGE ON-PRESSED ACTION TO LEAD TO ANOTHER SCREEN
 class Item3 extends StatelessWidget {
   const Item3({Key? key}) : super(key: key);
   @override
@@ -243,6 +282,9 @@ class Item3 extends StatelessWidget {
   }
 }
 
+//ITEM 4 (CARD 4) IN CAROUSEL
+
+//CHANGE ON-PRESSED ACTION TO LEAD TO ANOTHER SCREEN
 class Item4 extends StatelessWidget {
   const Item4({Key? key}) : super(key: key);
   @override
@@ -271,8 +313,9 @@ class Item4 extends StatelessWidget {
 }
 
 
+//THIS IS SETTING UP THE LIST OF NAMES FOR THE SEARCHBAR
 
-
+//EDIT THIS TO BE DECKS ADDED??
 class CustomSearchDelegate extends SearchDelegate {
   // Demo list to show querying
   List<String> searchTerms = [
@@ -286,6 +329,7 @@ class CustomSearchDelegate extends SearchDelegate {
     "Strawberries"
   ];
 
+  //MORE CODE FOR MAKING THE SEARCHBAR WORK:
   // first overwrite to
   // clear the search text
   @override
