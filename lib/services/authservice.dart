@@ -1,8 +1,12 @@
 import 'package:firebase_auth/firebase_auth.dart';
 
 class AuthService {
+  static User? getUser() {
+    return FirebaseAuth.instance.currentUser;
+  }
+
   static bool isUserSignedIn() {
-    return FirebaseAuth.instance.currentUser != null;
+    return getUser() != null;
   }
 
   /// Signs in the current user using the specified email and password.
@@ -12,6 +16,7 @@ class AuthService {
     try {
       await FirebaseAuth.instance
           .signInWithEmailAndPassword(email: email, password: password);
+      return null;
     } on FirebaseAuthException catch (e) {
       return e.message;
     }
@@ -26,6 +31,7 @@ class AuthService {
       UserCredential credential = await FirebaseAuth.instance
           .createUserWithEmailAndPassword(email: email, password: password);
       await credential.user!.updateDisplayName(displayname);
+      return null;
     } on FirebaseAuthException catch (e) {
       return e.message;
     }
