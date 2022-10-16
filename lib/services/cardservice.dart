@@ -27,7 +27,7 @@ class PersonCard {
   factory PersonCard.fromDocument(
       DocumentSnapshot<Map<String, dynamic>> snapshot) {
     String id = snapshot.id;
-    Map<String, dynamic> docData = snapshot.data()!;
+    Map<String, dynamic> docData = Map.from(snapshot.data()!);
     PersonCardData personCardData = PersonCardData.fromMap(docData);
     return PersonCard(id, personCardData);
   }
@@ -43,9 +43,13 @@ class PersonCardData {
   final Map<String, String> questions;
 
   factory PersonCardData.fromMap(Map<String, dynamic> data) {
+    Map<String, dynamic> dynamicQuestions = data['questions'];
     return PersonCardData(
       name: data['name'],
-      questions: data['questions'],
+      questions: dynamicQuestions.map(
+        // Needed for some reason even though value is already a string
+        ((key, value) => MapEntry<String, String>(key, value)),
+      ),
     );
   }
 
