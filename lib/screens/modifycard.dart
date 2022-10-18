@@ -1,3 +1,4 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:rememberme/services/cardservice.dart';
 
@@ -27,7 +28,9 @@ class _ModifyCardState extends State<ModifyCard> {
         );
       });
     } else {
-      _questionWidgets.add(_getDefaultQuestionWidget(null, null));
+      _questionWidgets.add(
+        _getDefaultQuestionWidget(null, null),
+      );
     }
     super.initState();
   }
@@ -35,14 +38,16 @@ class _ModifyCardState extends State<ModifyCard> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 24),
-        child: Center(
-          child: Form(
-            key: _formKey,
-            child: Column(
-              children: <Widget>[
-                TextFormField(
+      body: Form(
+        key: _formKey,
+        child: ListView(
+          padding: const EdgeInsets.all(24),
+          children: <Widget>[
+            Card(
+              margin: const EdgeInsets.symmetric(vertical: 6),
+              child: Padding(
+                padding: const EdgeInsets.all(12),
+                child: TextFormField(
                   decoration: const InputDecoration(hintText: 'Name'),
                   validator: (value) {
                     if (value == null || value.isEmpty) {
@@ -51,32 +56,32 @@ class _ModifyCardState extends State<ModifyCard> {
                     return null;
                   },
                   initialValue: _name,
-                  onSaved: (newValue) => _name = newValue!,
+                  onSaved: (newValue) => _name = newValue,
                 ),
-                ..._questionWidgets,
-                ElevatedButton(
-                  onPressed: () {
-                    setState(() {
-                      _questionWidgets.add(
-                        _getDefaultQuestionWidget(null, null),
-                      );
-                    });
-                  },
-                  child: const Text('Add New Section'),
-                ),
-                ElevatedButton(
-                  onPressed: () {
-                    if (_formKey.currentState!.validate()) {
-                      _questions = {}; // Clear old values
-                      _formKey.currentState!.save();
-                      _saveCard();
-                    }
-                  },
-                  child: const Text('Save'),
-                ),
-              ],
+              ),
             ),
-          ),
+            ..._questionWidgets,
+            ElevatedButton(
+              onPressed: () {
+                setState(() {
+                  _questionWidgets.add(
+                    _getDefaultQuestionWidget(null, null),
+                  );
+                });
+              },
+              child: const Text('Add New Section'),
+            ),
+            ElevatedButton(
+              onPressed: () {
+                if (_formKey.currentState!.validate()) {
+                  _questions = {}; // Clear old values
+                  _formKey.currentState!.save();
+                  _saveCard();
+                }
+              },
+              child: const Text('Save'),
+            ),
+          ],
         ),
       ),
     );
@@ -86,9 +91,15 @@ class _ModifyCardState extends State<ModifyCard> {
     return _QuestionWidget(
       initialQuestion: question,
       initialAnswer: answer,
+      key: UniqueKey(),
       onSaved: (newValue) {
         // Assume not-null because save is called after validation
         _questions[newValue!.key!] = newValue.value!;
+      },
+      onDelete: (key) {
+        setState(() {
+          _questionWidgets.removeWhere((element) => element.key == key);
+        });
       },
     );
   }
@@ -111,49 +122,83 @@ class _ModifyCardState extends State<ModifyCard> {
         );
       }
       Navigator.pop(context);
-    } catch (e) {}
+    } on FirebaseException catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(e.message ?? 'There was an unknown error.'),
+        ),
+      );
+    }
   }
 }
 
 class _QuestionWidget extends FormField<MapEntry<String?, String?>> {
-  final String? initialQuestion, initialAnswer;
-
   _QuestionWidget({
-    this.initialQuestion,
-    this.initialAnswer,
+    Key? key,
+    initialQuestion,
+    initialAnswer,
     FormFieldSetter<MapEntry<String?, String?>>? onSaved,
+    void Function(Key? key)? onDelete,
   }) : super(
           onSaved: onSaved,
+          key: key,
+          initialValue: MapEntry(initialQuestion, initialQuestion),
           builder: (FormFieldState<MapEntry<String?, String?>> state) {
-            return Column(
-              children: [
-                TextFormField(
-                  decoration: const InputDecoration(hintText: 'Question'),
-                  initialValue: initialQuestion,
-                  onChanged: (value) {
-                    state.didChange(MapEntry(value, state.value?.value ?? ''));
-                  },
-                  validator: (value) {
-                    if (value == null || value.isEmpty) {
-                      return 'Please enter a question';
-                    }
-                    return null;
-                  },
+            return Card(
+              margin: const EdgeInsets.symmetric(vertical: 6),
+              child: Padding(
+                padding: const EdgeInsets.all(12),
+                child: Stack(
+                  children: [
+                    Column(
+                      children: <Widget>[
+                        TextFormField(
+                          decoration: const InputDecoration(hintText: 'Prompt'),
+                          initialValue: initialQuestion,
+                          onChanged: (value) {
+                            state.didChange(
+                              MapEntry(value, state.value?.value),
+                            );
+                          },
+                          validator: (value) {
+                            if (value == null || value.isEmpty) {
+                              return 'Please enter a prompt';
+                            }
+                            return null;
+                          },
+                        ),
+                        TextFormField(
+                          decoration: const InputDecoration(hintText: 'Answer'),
+                          initialValue: initialAnswer,
+                          onChanged: (value) {
+                            state.didChange(
+                              MapEntry(state.value?.key, value),
+                            );
+                          },
+                          validator: (value) {
+                            if (value == null || value.isEmpty) {
+                              return 'Please enter an answer';
+                            }
+                            return null;
+                          },
+                        ),
+                      ],
+                    ),
+                    Positioned(
+                      top: -16,
+                      right: -16,
+                      child: IconButton(
+                        iconSize: 24,
+                        splashRadius: 24,
+                        onPressed: (() {
+                          if (onDelete != null) onDelete(key);
+                        }),
+                        icon: const Icon(Icons.close),
+                      ),
+                    ),
+                  ],
                 ),
-                TextFormField(
-                  decoration: const InputDecoration(hintText: 'Answer'),
-                  initialValue: initialAnswer,
-                  onChanged: (value) {
-                    state.didChange(MapEntry(state.value?.key ?? '', value));
-                  },
-                  validator: (value) {
-                    if (value == null || value.isEmpty) {
-                      return 'Please enter an answer';
-                    }
-                    return null;
-                  },
-                ),
-              ],
+              ),
             );
           },
         );
