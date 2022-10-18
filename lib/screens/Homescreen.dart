@@ -1,26 +1,27 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:carousel_slider/carousel_slider.dart';
+import 'package:flutter_speed_dial/flutter_speed_dial.dart';
+import 'package:rememberme/screens/modifycard.dart';
 
 //Note, pubspec.yaml has been changed to make this work
 //Also, I've had to use "flutter run --no-sound-null-safety" in the terminal
 //And then hot reload works by typing "r" in the terminal
 
-
 class Homepage extends StatefulWidget {
-const Homepage({Key? key}) : super(key: key);
+  const Homepage({Key? key}) : super(key: key);
 
-@override
-State<Homepage> createState() => _Homepage();
+  @override
+  State<Homepage> createState() => _Homepage();
 }
 
 class _Homepage extends State<Homepage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      //STARTS WITH LOTS OF STUFF WITHIN SCAFFOLD!
+        //STARTS WITH LOTS OF STUFF WITHIN SCAFFOLD!
         appBar: PreferredSize(
-          //WITHIN THE APPBAR, FIRSTLY DEALING WITH CHANGED SIZE
+            //WITHIN THE APPBAR, FIRSTLY DEALING WITH CHANGED SIZE
             preferredSize: Size.fromHeight(100.0),
             child: AppBar(
               //HERE WE ADD A BACK BUTTON (CONNECT SCREEN LATER)
@@ -31,16 +32,13 @@ class _Homepage extends State<Homepage> {
                   icon: const Icon(Icons.arrow_left, size: 45),
                   label: const Text(''),
                   style: ElevatedButton.styleFrom(
-                      elevation: 0,
-                      backgroundColor: Colors.transparent)),
+                      elevation: 0, backgroundColor: Colors.transparent)),
 
               //THIS ADDS THE TEXT IN THE APPBAR
               title: Text('Welcome'),
               centerTitle: true,
-              titleTextStyle: TextStyle(
-                  fontSize: 25,
-                  fontWeight: FontWeight.bold
-              ),
+              titleTextStyle:
+                  TextStyle(fontSize: 25, fontWeight: FontWeight.bold),
               backgroundColor: Color.fromARGB(255, 253, 142, 84),
 
               //THIS IS TO ADD THE SEARCH BUTTON ICON AND MAKE IT SHOW SEARCH BAR
@@ -51,70 +49,62 @@ class _Homepage extends State<Homepage> {
                     showSearch(
                         context: context,
                         // delegate to customize the search bar
-                        delegate: CustomSearchDelegate()
-                    );
+                        delegate: CustomSearchDelegate());
                   },
                   icon: const Icon(Icons.search),
                 )
               ],
-            )
-        ),
+            )),
 
         //For plus button
-        floatingActionButton: Container(
-          height: 70.0,
-          width: 70.0,
-          child: FittedBox(
-            child:FloatingActionButton(
-                onPressed: () {
-                  //connect to next screen??
-                },
-              backgroundColor: Colors.orange,
-              child: const Icon(
-                  Icons.add,
-                  size: 30
+        floatingActionButton: SpeedDial(
+          icon: Icons.add,
+          activeIcon: Icons.close,
+          backgroundColor: Color.fromARGB(255, 253, 142, 84),
+          spaceBetweenChildren: 10,
+          children: [
+            SpeedDialChild(
+              label: 'New Card',
+              child: const Icon(Icons.note_add),
+              onTap: () => Navigator.of(context).push(
+                MaterialPageRoute(builder: (_) => const ModifyCard()),
               ),
-            )
-          )
-
-
+            ),
+            SpeedDialChild(
+              label: 'New Deck',
+              child: const Icon(Icons.collections_bookmark),
+            ),
+          ],
         ),
 
         //HERE THE BODY STARTS, MAKE INTO A COLUMN WITH CONTAINERS AND SUCH
         body: Column(
           children: <Widget>[
-
             //For achievement heading on the Homepage--------------------------
             Container(
-              margin: EdgeInsets.fromLTRB(0,30,0,10),
+              margin: EdgeInsets.fromLTRB(0, 30, 0, 10),
               child: Text(
                 'Achievement:',
-                style: TextStyle(
-                    fontSize: 25,
-                    fontWeight: FontWeight.bold
-                ),
+                style: TextStyle(fontSize: 25, fontWeight: FontWeight.bold),
               ),
             ),
             //For the actual achievement---------------------
             Container(
-              margin: EdgeInsets.fromLTRB(0,0,0,10),
+              margin: EdgeInsets.fromLTRB(0, 0, 0, 10),
               child: Text(
                 'Added 10 cards!',
                 style: TextStyle(
-                    fontSize: 25,
+                  fontSize: 25,
                 ),
               ),
             ),
 
             //THIS CONTAINER IS FOR THE "Decks" TEXT
             Container(
-              margin: EdgeInsets.fromLTRB(0,30,0,0),
+              margin: EdgeInsets.fromLTRB(0, 30, 0, 0),
               child: Text(
                 'Decks',
-                style: TextStyle(
-                    fontSize: 25,
-                    fontWeight: FontWeight.bold
-                ),
+                style: TextStyle(fontSize: 25, fontWeight: FontWeight.bold),
               ),
             ),
 
@@ -134,63 +124,50 @@ class _Homepage extends State<Homepage> {
                   });
                 },
               ),
-              items: cardList.map((card){
-                return Builder(
-                    builder:(BuildContext context){
-                      return Container(
-                        height: MediaQuery.of(context).size.height,
-                        width: MediaQuery.of(context).size.width,
-                        child: Card(
-                          color: Colors.white,
-                          child: card,
-                        ),
-                      );
-                    }
-                );
+              items: cardList.map((card) {
+                return Builder(builder: (BuildContext context) {
+                  return Container(
+                    height: MediaQuery.of(context).size.height,
+                    width: MediaQuery.of(context).size.width,
+                    child: Card(
+                      color: Colors.white,
+                      child: card,
+                    ),
+                  );
+                });
               }).toList(),
             ),
-
-
 
             //THIS IS FOR A TEXT BUTTON TO SELECT 'Memory Games'
             //CHANGE ON-PRESSED ACTION TO GO TO ANOTHER SCREEN
             Container(
-              margin: EdgeInsets.fromLTRB(25,40,25,25),
+              margin: EdgeInsets.fromLTRB(25, 40, 25, 25),
               child: TextButton(
                 child: Text('Memory Games'),
                 style: TextButton.styleFrom(
                   primary: Colors.white,
                   backgroundColor: Colors.deepOrange[300],
                   onSurface: Colors.grey,
-                  padding: EdgeInsets.fromLTRB(90,30,90,30),
-                  shape: const BeveledRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(5))),
-                  textStyle: TextStyle(
-                      fontSize: 25
-                  ),
+                  padding: EdgeInsets.fromLTRB(90, 30, 90, 30),
+                  shape: const BeveledRectangleBorder(
+                      borderRadius: BorderRadius.all(Radius.circular(5))),
+                  textStyle: TextStyle(fontSize: 25),
                 ),
                 onPressed: () {
                   print('Pressed');
                 },
               ),
             ),
-
           ],
-        )
-    );
+        ));
   }
 }
-
 
 //OUTSIDE OF SCAFFOLD:
 
 //THIS IS FOR THE CARDS ('ITEMS') LIST FOR THE CAROUSEL SLIDER
-int _currentIndex=0;
-List cardList=[
-  Item1(),
-  Item2(),
-  Item3(),
-  Item4()
-];
+int _currentIndex = 0;
+List cardList = [Item1(), Item2(), Item3(), Item4()];
 List<T> map<T>(List list, Function handler) {
   List<T> result = [];
   for (var i = 0; i < list.length; i++) {
@@ -207,20 +184,17 @@ class Item1 extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      margin: EdgeInsets.fromLTRB(5,20,5,20),
+      margin: EdgeInsets.fromLTRB(5, 20, 5, 20),
       child: TextButton(
         child: Text('Master Deck'),
         style: TextButton.styleFrom(
             primary: Colors.black,
             backgroundColor: Colors.deepOrange[200],
             onSurface: Colors.grey,
-            padding: EdgeInsets.fromLTRB(90,30,90,30),
-            shape: const BeveledRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(12))),
-            textStyle: TextStyle(
-                fontSize: 25,
-                fontStyle: FontStyle.italic
-            )
-        ),
+            padding: EdgeInsets.fromLTRB(90, 30, 90, 30),
+            shape: const BeveledRectangleBorder(
+                borderRadius: BorderRadius.all(Radius.circular(12))),
+            textStyle: TextStyle(fontSize: 25, fontStyle: FontStyle.italic)),
         onPressed: () {
           print('Pressed');
         },
@@ -237,20 +211,17 @@ class Item2 extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      margin: EdgeInsets.fromLTRB(5,20,5,20),
+      margin: EdgeInsets.fromLTRB(5, 20, 5, 20),
       child: TextButton(
         child: Text('Deck 1'),
         style: TextButton.styleFrom(
             primary: Colors.black,
             backgroundColor: Colors.deepOrange[200],
             onSurface: Colors.grey,
-            padding: EdgeInsets.fromLTRB(90,40,90,40),
-            shape: const BeveledRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(12))),
-            textStyle: TextStyle(
-                fontSize: 25,
-                fontStyle: FontStyle.italic
-            )
-        ),
+            padding: EdgeInsets.fromLTRB(90, 40, 90, 40),
+            shape: const BeveledRectangleBorder(
+                borderRadius: BorderRadius.all(Radius.circular(12))),
+            textStyle: TextStyle(fontSize: 25, fontStyle: FontStyle.italic)),
         onPressed: () {
           print('Pressed');
         },
@@ -267,20 +238,17 @@ class Item3 extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      margin: EdgeInsets.fromLTRB(5,20,5,20),
+      margin: EdgeInsets.fromLTRB(5, 20, 5, 20),
       child: TextButton(
         child: Text('Deck 2'),
         style: TextButton.styleFrom(
             primary: Colors.black,
             backgroundColor: Colors.deepOrange[200],
             onSurface: Colors.grey,
-            padding: EdgeInsets.fromLTRB(90,40,90,40),
-            shape: const BeveledRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(12))),
-            textStyle: TextStyle(
-                fontSize: 25,
-                fontStyle: FontStyle.italic
-            )
-        ),
+            padding: EdgeInsets.fromLTRB(90, 40, 90, 40),
+            shape: const BeveledRectangleBorder(
+                borderRadius: BorderRadius.all(Radius.circular(12))),
+            textStyle: TextStyle(fontSize: 25, fontStyle: FontStyle.italic)),
         onPressed: () {
           print('Pressed');
         },
@@ -297,20 +265,17 @@ class Item4 extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      margin: EdgeInsets.fromLTRB(5,20,5,20),
+      margin: EdgeInsets.fromLTRB(5, 20, 5, 20),
       child: TextButton(
         child: Text('Deck 3'),
         style: TextButton.styleFrom(
             primary: Colors.black,
             backgroundColor: Colors.deepOrange[200],
             onSurface: Colors.grey,
-            padding: EdgeInsets.fromLTRB(90,40,90,40),
-            shape: const BeveledRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(12))),
-            textStyle: TextStyle(
-                fontSize: 25,
-                fontStyle: FontStyle.italic
-            )
-        ),
+            padding: EdgeInsets.fromLTRB(90, 40, 90, 40),
+            shape: const BeveledRectangleBorder(
+                borderRadius: BorderRadius.all(Radius.circular(12))),
+            textStyle: TextStyle(fontSize: 25, fontStyle: FontStyle.italic)),
         onPressed: () {
           print('Pressed');
         },
@@ -318,7 +283,6 @@ class Item4 extends StatelessWidget {
     );
   }
 }
-
 
 //THIS IS SETTING UP THE LIST OF NAMES FOR THE SEARCHBAR
 
@@ -403,4 +367,3 @@ class CustomSearchDelegate extends SearchDelegate {
     );
   }
 }
-
