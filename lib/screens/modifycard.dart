@@ -48,67 +48,70 @@ class _ModifyCardState extends State<ModifyCard> {
         child: const Icon(Icons.save),
       ),
       appBar: AppBar(),
-      body: Form(
-        key: _formKey,
-        child: ListView(
-          padding: const EdgeInsets.all(24),
-          children: <Widget>[
-            Card(
-              margin: const EdgeInsets.symmetric(vertical: 6),
-              child: Padding(
-                padding: const EdgeInsets.all(12),
-                child: TextFormField(
-                  decoration: const InputDecoration(hintText: 'Name'),
-                  validator: (value) {
-                    if (value == null || value.isEmpty) {
-                      return 'Please enter a name';
-                    }
-                    return null;
-                  },
-                  initialValue: _name,
-                  onSaved: (newValue) => _name = newValue,
+      body: WillPopScope(
+        onWillPop: _showExitWithoutSaveDialog,
+        child: Form(
+          key: _formKey,
+          child: ListView(
+            padding: const EdgeInsets.all(24),
+            children: <Widget>[
+              Card(
+                margin: const EdgeInsets.symmetric(vertical: 6),
+                child: Padding(
+                  padding: const EdgeInsets.all(12),
+                  child: TextFormField(
+                    decoration: const InputDecoration(hintText: 'Name'),
+                    validator: (value) {
+                      if (value == null || value.isEmpty) {
+                        return 'Please enter a name';
+                      }
+                      return null;
+                    },
+                    initialValue: _name,
+                    onSaved: (newValue) => _name = newValue,
+                  ),
                 ),
               ),
-            ),
-            Card(
-              margin: const EdgeInsets.symmetric(vertical: 6),
-              child: Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 6),
-                child: TextButton.icon(
-                  onPressed: () => _showDeckDialog(),
-                  style: TextButton.styleFrom(
-                    alignment: Alignment.centerLeft,
-                  ),
-                  icon: const Icon(
-                    Icons.add,
-                    color: Colors.black,
-                  ),
-                  label: Text(
-                    ' Add to Deck(s)',
-                    style: TextStyle(
-                      color: Theme.of(context).hintColor,
+              Card(
+                margin: const EdgeInsets.symmetric(vertical: 6),
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 6),
+                  child: TextButton.icon(
+                    onPressed: () => _showDeckDialog(),
+                    style: TextButton.styleFrom(
+                      alignment: Alignment.centerLeft,
+                    ),
+                    icon: const Icon(
+                      Icons.add,
+                      color: Colors.black,
+                    ),
+                    label: Text(
+                      ' Add to Deck(s)',
+                      style: TextStyle(
+                        color: Theme.of(context).hintColor,
+                      ),
                     ),
                   ),
                 ),
               ),
-            ),
-            ..._questionWidgets,
-            RawMaterialButton(
-              onPressed: () {
-                setState(() {
-                  _questionWidgets.add(
-                    _getDefaultQuestionWidget(null, null),
-                  );
-                });
-              },
-              fillColor: Theme.of(context).primaryColor,
-              shape: const CircleBorder(),
-              child: const Icon(
-                Icons.add,
-                color: Colors.white,
+              ..._questionWidgets,
+              RawMaterialButton(
+                onPressed: () {
+                  setState(() {
+                    _questionWidgets.add(
+                      _getDefaultQuestionWidget(null, null),
+                    );
+                  });
+                },
+                fillColor: Theme.of(context).primaryColor,
+                shape: const CircleBorder(),
+                child: const Icon(
+                  Icons.add,
+                  color: Colors.white,
+                ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );
@@ -129,6 +132,26 @@ class _ModifyCardState extends State<ModifyCard> {
         });
       },
     );
+  }
+
+  Future<bool> _showExitWithoutSaveDialog() async {
+    var res = await showDialog<bool>(
+      context: context,
+      builder: (c) => AlertDialog(
+        content: const Text('Do you want to exit without saving?'),
+        actions: [
+          TextButton(
+            child: const Text('No'),
+            onPressed: () => Navigator.pop(c, false),
+          ),
+          TextButton(
+            child: const Text('Yes'),
+            onPressed: () => Navigator.pop(c, true),
+          ),
+        ],
+      ),
+    );
+    return res ?? false;
   }
 
   void _showDeckDialog() {
