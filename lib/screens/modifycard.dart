@@ -1,6 +1,8 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:multi_select_flutter/multi_select_flutter.dart';
 import 'package:rememberme/services/cardservice.dart';
+import 'package:rememberme/services/deckservice.dart';
 
 class ModifyCard extends StatefulWidget {
   const ModifyCard({super.key, this.existingCard});
@@ -18,11 +20,14 @@ class _ModifyCardState extends State<ModifyCard> {
   Map<String, String> _questions = {};
   final List<_QuestionWidget> _questionWidgets = [];
 
+  List<String> _selectedDecks = [];
+  Future<Map<String, String>>? _decksFuture;
+
   @override
   void initState() {
     if (widget.existingCard != null) {
-      _name = widget.existingCard!.data.name;
-      widget.existingCard!.data.questions.forEach((key, value) {
+      _name = widget.existingCard!.name;
+      widget.existingCard!.questions.forEach((key, value) {
         _questionWidgets.add(
           _getDefaultQuestionWidget(key, value),
         );
@@ -38,6 +43,11 @@ class _ModifyCardState extends State<ModifyCard> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      floatingActionButton: FloatingActionButton(
+        onPressed: () => _saveCard(),
+        child: const Icon(Icons.save),
+      ),
+      appBar: AppBar(),
       body: Form(
         key: _formKey,
         child: ListView(
@@ -60,8 +70,30 @@ class _ModifyCardState extends State<ModifyCard> {
                 ),
               ),
             ),
+            Card(
+              margin: const EdgeInsets.symmetric(vertical: 6),
+              child: Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 6),
+                child: TextButton.icon(
+                  onPressed: () => _showDeckDialog(),
+                  style: TextButton.styleFrom(
+                    alignment: Alignment.centerLeft,
+                  ),
+                  icon: const Icon(
+                    Icons.add,
+                    color: Colors.black,
+                  ),
+                  label: Text(
+                    ' Add to Deck(s)',
+                    style: TextStyle(
+                      color: Theme.of(context).hintColor,
+                    ),
+                  ),
+                ),
+              ),
+            ),
             ..._questionWidgets,
-            ElevatedButton(
+            RawMaterialButton(
               onPressed: () {
                 setState(() {
                   _questionWidgets.add(
@@ -69,17 +101,12 @@ class _ModifyCardState extends State<ModifyCard> {
                   );
                 });
               },
-              child: const Text('Add New Section'),
-            ),
-            ElevatedButton(
-              onPressed: () {
-                if (_formKey.currentState!.validate()) {
-                  _questions = {}; // Clear old values
-                  _formKey.currentState!.save();
-                  _saveCard();
-                }
-              },
-              child: const Text('Save'),
+              fillColor: Theme.of(context).primaryColor,
+              shape: const CircleBorder(),
+              child: const Icon(
+                Icons.add,
+                color: Colors.white,
+              ),
             ),
           ],
         ),
@@ -104,30 +131,100 @@ class _ModifyCardState extends State<ModifyCard> {
     );
   }
 
-  void _saveCard() {
-    var data = PersonCardData(
-      name: _name!,
-      questions: _questions,
-    );
+  void _showDeckDialog() {
+    // Dont make a request for decks until theyre needed. This will
+    // also cache the result
+    _decksFuture ??= DeckService.getAllDeckDocs().then((docs) {
+      Map<String, String> decks = {};
+      for (var doc in docs) {
+        var data = doc.data();
+        decks[doc.id] = data['name'];
+        if (widget.existingCard != null) {
+          List<String> cards = data['cards'];
+          if (cards.contains(widget.existingCard!.id)) {
+            _selectedDecks.add(doc.id);
+          }
+        }
+      }
+      return decks;
+    });
 
-    try {
-      if (widget.existingCard == null) {
-        CardService.addCard(data);
-      } else {
-        CardService.modifyCard(
-          PersonCard(
-            widget.existingCard!.id,
-            data,
+    showDialog(
+      context: context,
+      builder: (ctx) => FutureBuilder(
+        future: _decksFuture,
+        builder: (context, snapshot) {
+          if (snapshot.hasData || snapshot.hasError) {
+            if (snapshot.data != null) {
+              // SHOW ACTUAL OPTIONS:
+              return MultiSelectDialog(
+                title: const Text('Select Deck(s)'),
+                searchable: true,
+                items: snapshot.data!.entries
+                    .map((deck) => MultiSelectItem(deck.key, deck.value))
+                    .toList(),
+                initialValue: _selectedDecks,
+                onConfirm: (values) => _selectedDecks = values,
+              );
+            } else {
+              // SHOW ERROR MESSAGE
+              return AlertDialog(
+                content: Text(
+                  snapshot.error?.toString() ?? 'There was an unknown error.',
+                ),
+              );
+            }
+          } else {
+            // SHOW LOADING SCREEN:
+            return const Center(
+              child: CircularProgressIndicator(),
+            );
+          }
+        },
+      ),
+    );
+  }
+
+  void _saveCard() async {
+    if (_formKey.currentState!.validate()) {
+      _questions = {}; // Clear old values
+      _formKey.currentState!.save();
+
+      try {
+        PersonCard card;
+        if (widget.existingCard == null) {
+          card = await CardService.addCard(
+            name: _name!,
+            questions: _questions,
+          );
+        } else {
+          card = await CardService.modifyCard(PersonCard(
+            id: widget.existingCard!.id,
+            name: _name!,
+            questions: _questions,
+          ));
+        }
+
+        // Only update decks if the deck status was requested at all
+        if (_decksFuture != null) {
+          var allDecks = await _decksFuture!;
+          var removeDecks =
+              allDecks.keys.where((e) => !_selectedDecks.contains(e)).toList();
+          await DeckService.assignCardsToDecks(
+            cardIds: [card.id],
+            addDecksIds: _selectedDecks,
+            removeDecksIds: removeDecks,
+          );
+        }
+
+        if (mounted) Navigator.of(context).pop(card);
+      } on FirebaseException catch (e) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(e.message ?? 'There was an unknown error.'),
           ),
         );
       }
-      Navigator.pop(context);
-    } on FirebaseException catch (e) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text(e.message ?? 'There was an unknown error.'),
-        ),
-      );
     }
   }
 }

@@ -41,6 +41,7 @@ dependencies:
   firebase_auth: ^3.11.0
   carousel_slider: ^2.2.1
   flutter_speed_dial: ^6.2.0
+  multi_select_flutter: ^4.1.2
 
 dev_dependencies:
   flutter_test:
