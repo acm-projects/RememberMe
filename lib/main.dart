@@ -15,15 +15,32 @@ void main() async {
 }
 
 class MyApp extends StatelessWidget {
-  MyApp({super.key});
+  const MyApp({super.key});
 
-  // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
+    const primaryColor = Color.fromARGB(255, 253, 142, 84);
+
     return MaterialApp(
       title: 'Flutter Demo',
       theme: ThemeData(
-        primarySwatch: Colors.blue,
+        primaryColor: primaryColor,
+        appBarTheme: const AppBarTheme(
+          backgroundColor: primaryColor,
+        ),
+        floatingActionButtonTheme: const FloatingActionButtonThemeData(
+          backgroundColor: primaryColor,
+        ),
+        cardTheme: const CardTheme(
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.all(Radius.circular(12)),
+          ),
+        ),
+        inputDecorationTheme: const InputDecorationTheme(
+          focusedBorder: UnderlineInputBorder(
+            borderSide: BorderSide(color: Colors.black),
+          ),
+        ),
       ),
       home: AuthService.isUserSignedIn() ? Homepage() : LoginOptions(),
     );
