@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-class masterdeck extends StatelessWidget
+class DeckView extends StatelessWidget
 {
   @override
 
@@ -12,7 +12,7 @@ class masterdeck extends StatelessWidget
         elevation: 0,
         centerTitle: true,
         title: Text(
-          'Master Deck',
+          'CS Class',
           style: TextStyle(fontSize: 30),
         ),
         leading: IconButton(
@@ -32,49 +32,12 @@ class masterdeck extends StatelessWidget
   }
 }
 
-/*Widget myAppBar()
-{
-  return AppBar(
-    backgroundColor: Colors.deepOrange[400],
-    elevation: 0,
-    leading: IconButton(
-      icon: Icon(Icons.arrow_back, color: Colors.black,),
-      onPressed: ()
-      {
-        print("back pressed");
-      }
-    ),
-
-
-  );
-}*/
-
 class _Body extends StatelessWidget
 {
   @override
 
   Widget build(BuildContext context)
   {
-    /*return Column(
-      children: [
-        Expanded(
-            flex: 1,
-            child: Container (
-            )),
-        Expanded(
-            flex: 9,
-            child: Container(
-              decoration: BoxDecoration(
-                  color: Colors.white,
-
-                  borderRadius: BorderRadius.only(
-                      topLeft: Radius.circular(50),
-                      topRight: Radius.circular(50)
-                  )
-              ),
-            ))
-      ],
-    ); */
 
     return Scaffold(
       body: Center(
@@ -193,7 +156,7 @@ class _Body extends StatelessWidget
               height: 125,
               child: Center(
                 child: Text(
-                  'Dhruv Vikram',
+                  'Naomi Kurian',
                   style: TextStyle(
                     color: Colors.black,
                     fontSize: 25,
@@ -210,6 +173,7 @@ class _Body extends StatelessWidget
               ),
             ),
 
+            /*
             Container(
               width: 30,
               height: 30,
@@ -314,7 +278,7 @@ class _Body extends StatelessWidget
                 shape: BoxShape.circle,
               ),
             ),
-
+*/
           ],
         ),
       ),
