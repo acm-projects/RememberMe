@@ -3,25 +3,25 @@ import 'package:flutter/material.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter_speed_dial/flutter_speed_dial.dart';
 import 'package:rememberme/screens/modifycard.dart';
-
 //Note, pubspec.yaml has been changed to make this work
 //Also, I've had to use "flutter run --no-sound-null-safety" in the terminal
 //And then hot reload works by typing "r" in the terminal
 
-class Homepage extends StatefulWidget {
-  const Homepage({Key? key}) : super(key: key);
 
-  @override
-  State<Homepage> createState() => _Homepage();
+class Homepage extends StatefulWidget {
+const Homepage({Key? key}) : super(key: key);
+
+@override
+State<Homepage> createState() => _Homepage();
 }
 
 class _Homepage extends State<Homepage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        //STARTS WITH LOTS OF STUFF WITHIN SCAFFOLD!
+      //STARTS WITH LOTS OF STUFF WITHIN SCAFFOLD!
         appBar: PreferredSize(
-            //WITHIN THE APPBAR, FIRSTLY DEALING WITH CHANGED SIZE
+          //WITHIN THE APPBAR, FIRSTLY DEALING WITH CHANGED SIZE
             preferredSize: Size.fromHeight(100.0),
             child: AppBar(
               //HERE WE ADD A BACK BUTTON (CONNECT SCREEN LATER)
@@ -32,13 +32,16 @@ class _Homepage extends State<Homepage> {
                   icon: const Icon(Icons.arrow_left, size: 45),
                   label: const Text(''),
                   style: ElevatedButton.styleFrom(
-                      elevation: 0, backgroundColor: Colors.transparent)),
+                      elevation: 0,
+                      backgroundColor: Colors.transparent)),
 
               //THIS ADDS THE TEXT IN THE APPBAR
               title: Text('Welcome'),
               centerTitle: true,
-              titleTextStyle:
-                  TextStyle(fontSize: 25, fontWeight: FontWeight.bold),
+              titleTextStyle: TextStyle(
+                  fontSize: 25,
+                  fontWeight: FontWeight.bold
+              ),
               backgroundColor: Color.fromARGB(255, 253, 142, 84),
 
               //THIS IS TO ADD THE SEARCH BUTTON ICON AND MAKE IT SHOW SEARCH BAR
@@ -49,12 +52,14 @@ class _Homepage extends State<Homepage> {
                     showSearch(
                         context: context,
                         // delegate to customize the search bar
-                        delegate: CustomSearchDelegate());
+                        delegate: CustomSearchDelegate()
+                    );
                   },
                   icon: const Icon(Icons.search),
                 )
               ],
-            )),
+            )
+        ),
 
         //For plus button
         floatingActionButton: SpeedDial(
@@ -138,6 +143,8 @@ class _Homepage extends State<Homepage> {
               }).toList(),
             ),
 
+
+
             //THIS IS FOR A TEXT BUTTON TO SELECT 'Memory Games'
             //CHANGE ON-PRESSED ACTION TO GO TO ANOTHER SCREEN
             Container(
@@ -159,7 +166,8 @@ class _Homepage extends State<Homepage> {
               ),
             ),
           ],
-        ));
+        )
+    );
   }
 }
 
