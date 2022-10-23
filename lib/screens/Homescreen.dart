@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:carousel_slider/carousel_slider.dart';
+import 'Stats.dart';
 
 //Note, pubspec.yaml has been changed to make this work
 //Also, I've had to use "flutter run --no-sound-null-safety" in the terminal
@@ -83,18 +84,32 @@ class _Homepage extends State<Homepage> {
         //HERE THE BODY STARTS, MAKE INTO A COLUMN WITH CONTAINERS AND SUCH
         body: Column(
           children: <Widget>[
-
             //For achievement heading on the Homepage--------------------------
             Container(
               margin: EdgeInsets.fromLTRB(0,30,0,10),
-              child: Text(
-                'Achievement:',
-                style: TextStyle(
-                    fontSize: 25,
-                    fontWeight: FontWeight.bold
+              child: TextButton(
+                child: Text('Achievement'),
+                style: TextButton.styleFrom(
+                  primary: Colors.black,
+                  //backgroundColor: Colors.deepOrange[300],
+                  //onSurface: Colors.grey,
+                  //padding: EdgeInsets.fromLTRB(90,30,90,30),
+                  //shape: const BeveledRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(5))),
+                  textStyle: TextStyle(
+                      fontSize: 25,
+                      fontWeight: FontWeight.bold
+                  ),
                 ),
+                onPressed: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => const Stats())
+                  );
+                },
               ),
             ),
+
+
             //For the actual achievement---------------------
             Container(
               margin: EdgeInsets.fromLTRB(0,0,0,10),
