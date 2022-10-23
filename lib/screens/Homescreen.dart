@@ -1,8 +1,8 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:carousel_slider/carousel_slider.dart';
-import 'Stats.dart';
-
+import 'package:flutter_speed_dial/flutter_speed_dial.dart';
+import 'package:rememberme/screens/modifycard.dart';
 //Note, pubspec.yaml has been changed to make this work
 //Also, I've had to use "flutter run --no-sound-null-safety" in the terminal
 //And then hot reload works by typing "r" in the terminal
@@ -62,23 +62,24 @@ class _Homepage extends State<Homepage> {
         ),
 
         //For plus button
-        floatingActionButton: Container(
-          height: 70.0,
-          width: 70.0,
-          child: FittedBox(
-            child:FloatingActionButton(
-                onPressed: () {
-                  //connect to next screen??
-                },
-              backgroundColor: Colors.orange,
-              child: const Icon(
-                  Icons.add,
-                  size: 30
+        floatingActionButton: SpeedDial(
+          icon: Icons.add,
+          activeIcon: Icons.close,
+          backgroundColor: Color.fromARGB(255, 253, 142, 84),
+          spaceBetweenChildren: 10,
+          children: [
+            SpeedDialChild(
+              label: 'New Card',
+              child: const Icon(Icons.note_add),
+              onTap: () => Navigator.of(context).push(
+                MaterialPageRoute(builder: (_) => const ModifyCard()),
               ),
-            )
-          )
-
-
+            ),
+            SpeedDialChild(
+              label: 'New Deck',
+              child: const Icon(Icons.collections_bookmark),
+            ),
+          ],
         ),
 
         //HERE THE BODY STARTS, MAKE INTO A COLUMN WITH CONTAINERS AND SUCH
@@ -86,50 +87,29 @@ class _Homepage extends State<Homepage> {
           children: <Widget>[
             //For achievement heading on the Homepage--------------------------
             Container(
-              margin: EdgeInsets.fromLTRB(0,30,0,10),
-              child: TextButton(
-                child: Text('Achievement'),
-                style: TextButton.styleFrom(
-                  primary: Colors.black,
-                  //backgroundColor: Colors.deepOrange[300],
-                  //onSurface: Colors.grey,
-                  //padding: EdgeInsets.fromLTRB(90,30,90,30),
-                  //shape: const BeveledRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(5))),
-                  textStyle: TextStyle(
-                      fontSize: 25,
-                      fontWeight: FontWeight.bold
-                  ),
-                ),
-                onPressed: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (context) => const Stats())
-                  );
-                },
+              margin: EdgeInsets.fromLTRB(0, 30, 0, 10),
+              child: Text(
+                'Achievement:',
+                style: TextStyle(fontSize: 25, fontWeight: FontWeight.bold),
               ),
             ),
-
-
             //For the actual achievement---------------------
             Container(
-              margin: EdgeInsets.fromLTRB(0,0,0,10),
+              margin: EdgeInsets.fromLTRB(0, 0, 0, 10),
               child: Text(
                 'Added 10 cards!',
                 style: TextStyle(
-                    fontSize: 25,
+                  fontSize: 25,
                 ),
               ),
             ),
 
             //THIS CONTAINER IS FOR THE "Decks" TEXT
             Container(
-              margin: EdgeInsets.fromLTRB(0,30,0,0),
+              margin: EdgeInsets.fromLTRB(0, 30, 0, 0),
               child: Text(
                 'Decks',
-                style: TextStyle(
-                    fontSize: 25,
-                    fontWeight: FontWeight.bold
-                ),
+                style: TextStyle(fontSize: 25, fontWeight: FontWeight.bold),
               ),
             ),
 
@@ -149,19 +129,17 @@ class _Homepage extends State<Homepage> {
                   });
                 },
               ),
-              items: cardList.map((card){
-                return Builder(
-                    builder:(BuildContext context){
-                      return Container(
-                        height: MediaQuery.of(context).size.height,
-                        width: MediaQuery.of(context).size.width,
-                        child: Card(
-                          color: Colors.white,
-                          child: card,
-                        ),
-                      );
-                    }
-                );
+              items: cardList.map((card) {
+                return Builder(builder: (BuildContext context) {
+                  return Container(
+                    height: MediaQuery.of(context).size.height,
+                    width: MediaQuery.of(context).size.width,
+                    child: Card(
+                      color: Colors.white,
+                      child: card,
+                    ),
+                  );
+                });
               }).toList(),
             ),
 
@@ -170,42 +148,34 @@ class _Homepage extends State<Homepage> {
             //THIS IS FOR A TEXT BUTTON TO SELECT 'Memory Games'
             //CHANGE ON-PRESSED ACTION TO GO TO ANOTHER SCREEN
             Container(
-              margin: EdgeInsets.fromLTRB(25,40,25,25),
+              margin: EdgeInsets.fromLTRB(25, 40, 25, 25),
               child: TextButton(
                 child: Text('Memory Games'),
                 style: TextButton.styleFrom(
                   primary: Colors.white,
                   backgroundColor: Colors.deepOrange[300],
                   onSurface: Colors.grey,
-                  padding: EdgeInsets.fromLTRB(90,30,90,30),
-                  shape: const BeveledRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(5))),
-                  textStyle: TextStyle(
-                      fontSize: 25
-                  ),
+                  padding: EdgeInsets.fromLTRB(90, 30, 90, 30),
+                  shape: const BeveledRectangleBorder(
+                      borderRadius: BorderRadius.all(Radius.circular(5))),
+                  textStyle: TextStyle(fontSize: 25),
                 ),
                 onPressed: () {
                   print('Pressed');
                 },
               ),
             ),
-
           ],
         )
     );
   }
 }
 
-
 //OUTSIDE OF SCAFFOLD:
 
 //THIS IS FOR THE CARDS ('ITEMS') LIST FOR THE CAROUSEL SLIDER
-int _currentIndex=0;
-List cardList=[
-  Item1(),
-  Item2(),
-  Item3(),
-  Item4()
-];
+int _currentIndex = 0;
+List cardList = [Item1(), Item2(), Item3(), Item4()];
 List<T> map<T>(List list, Function handler) {
   List<T> result = [];
   for (var i = 0; i < list.length; i++) {
@@ -222,20 +192,17 @@ class Item1 extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      margin: EdgeInsets.fromLTRB(5,20,5,20),
+      margin: EdgeInsets.fromLTRB(5, 20, 5, 20),
       child: TextButton(
         child: Text('Master Deck'),
         style: TextButton.styleFrom(
             primary: Colors.black,
             backgroundColor: Colors.deepOrange[200],
             onSurface: Colors.grey,
-            padding: EdgeInsets.fromLTRB(90,30,90,30),
-            shape: const BeveledRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(12))),
-            textStyle: TextStyle(
-                fontSize: 25,
-                fontStyle: FontStyle.italic
-            )
-        ),
+            padding: EdgeInsets.fromLTRB(90, 30, 90, 30),
+            shape: const BeveledRectangleBorder(
+                borderRadius: BorderRadius.all(Radius.circular(12))),
+            textStyle: TextStyle(fontSize: 25, fontStyle: FontStyle.italic)),
         onPressed: () {
           print('Pressed');
         },
@@ -252,20 +219,17 @@ class Item2 extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      margin: EdgeInsets.fromLTRB(5,20,5,20),
+      margin: EdgeInsets.fromLTRB(5, 20, 5, 20),
       child: TextButton(
         child: Text('Deck 1'),
         style: TextButton.styleFrom(
             primary: Colors.black,
             backgroundColor: Colors.deepOrange[200],
             onSurface: Colors.grey,
-            padding: EdgeInsets.fromLTRB(90,40,90,40),
-            shape: const BeveledRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(12))),
-            textStyle: TextStyle(
-                fontSize: 25,
-                fontStyle: FontStyle.italic
-            )
-        ),
+            padding: EdgeInsets.fromLTRB(90, 40, 90, 40),
+            shape: const BeveledRectangleBorder(
+                borderRadius: BorderRadius.all(Radius.circular(12))),
+            textStyle: TextStyle(fontSize: 25, fontStyle: FontStyle.italic)),
         onPressed: () {
           print('Pressed');
         },
@@ -282,20 +246,17 @@ class Item3 extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      margin: EdgeInsets.fromLTRB(5,20,5,20),
+      margin: EdgeInsets.fromLTRB(5, 20, 5, 20),
       child: TextButton(
         child: Text('Deck 2'),
         style: TextButton.styleFrom(
             primary: Colors.black,
             backgroundColor: Colors.deepOrange[200],
             onSurface: Colors.grey,
-            padding: EdgeInsets.fromLTRB(90,40,90,40),
-            shape: const BeveledRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(12))),
-            textStyle: TextStyle(
-                fontSize: 25,
-                fontStyle: FontStyle.italic
-            )
-        ),
+            padding: EdgeInsets.fromLTRB(90, 40, 90, 40),
+            shape: const BeveledRectangleBorder(
+                borderRadius: BorderRadius.all(Radius.circular(12))),
+            textStyle: TextStyle(fontSize: 25, fontStyle: FontStyle.italic)),
         onPressed: () {
           print('Pressed');
         },
@@ -312,20 +273,17 @@ class Item4 extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      margin: EdgeInsets.fromLTRB(5,20,5,20),
+      margin: EdgeInsets.fromLTRB(5, 20, 5, 20),
       child: TextButton(
         child: Text('Deck 3'),
         style: TextButton.styleFrom(
             primary: Colors.black,
             backgroundColor: Colors.deepOrange[200],
             onSurface: Colors.grey,
-            padding: EdgeInsets.fromLTRB(90,40,90,40),
-            shape: const BeveledRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(12))),
-            textStyle: TextStyle(
-                fontSize: 25,
-                fontStyle: FontStyle.italic
-            )
-        ),
+            padding: EdgeInsets.fromLTRB(90, 40, 90, 40),
+            shape: const BeveledRectangleBorder(
+                borderRadius: BorderRadius.all(Radius.circular(12))),
+            textStyle: TextStyle(fontSize: 25, fontStyle: FontStyle.italic)),
         onPressed: () {
           print('Pressed');
         },
@@ -333,7 +291,6 @@ class Item4 extends StatelessWidget {
     );
   }
 }
-
 
 //THIS IS SETTING UP THE LIST OF NAMES FOR THE SEARCHBAR
 
@@ -418,4 +375,3 @@ class CustomSearchDelegate extends SearchDelegate {
     );
   }
 }
-
