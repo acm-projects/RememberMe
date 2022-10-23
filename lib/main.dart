@@ -4,6 +4,8 @@ import 'package:rememberme/screens/Homescreen.dart';
 import 'package:rememberme/screens/login-signup.dart';
 import 'package:rememberme/services/authservice.dart';
 import 'firebase_options.dart';
+import 'package:rememberme/screens/modifycard.dart';
+import 'Screens/MemorySelect.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
