@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import '../widgets/CustomStatsWidget.dart';
+import 'package:rememberme/services/deckservice.dart';
 
 class Stats extends StatefulWidget {
   const Stats({Key? key}) : super(key: key);
@@ -10,6 +11,8 @@ class Stats extends StatefulWidget {
 }
 
 class _Stats extends State<Stats> {
+  final Future<Deck> deckFuture = DeckService.getMasterDeck();
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -40,13 +43,25 @@ class _Stats extends State<Stats> {
       ),
 
 
+
+
       body: Column(
           children: <Widget>[
-            //For achievement heading on the Homepage--------------------------
-            CustomStats(
-                titleText: "Cards Added",
-                achievement: "Added 10 cards!"
-            ),
+            //For achievement heading on the Homepage-------------------------
+
+            FutureBuilder(future: deckFuture, builder: (ctxt, snapshot)
+            {
+              if (snapshot.hasData) {
+                return CustomStats(
+                  titleText: "Cards Added",
+                  achievement: "${snapshot.data!.cards.length} cards added!",
+                );
+              }
+              else {
+                return CircularProgressIndicator();
+              }
+            }),
+
             CustomStats(
                 titleText: "High Score Today",
                 achievement: "Memory Game: 90%"
