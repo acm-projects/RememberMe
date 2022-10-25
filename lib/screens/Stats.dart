@@ -1,6 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'CustomStatsWidget.dart';
+import '../widgets/CustomStatsWidget.dart';
 
 class Stats extends StatefulWidget {
   const Stats({Key? key}) : super(key: key);
