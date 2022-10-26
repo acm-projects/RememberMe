@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:rememberme/screens/profile.dart';
 import 'package:rememberme/services/authservice.dart';
 
 class SignUp extends StatefulWidget {
@@ -10,6 +11,7 @@ class SignUp extends StatefulWidget {
 
 class _SignUpState extends State<SignUp> {
   final _formKey = GlobalKey<FormState>();
+  //final auth = FirebaseAuth.instance;
 
   late String _email ,_password, _name;
 
@@ -203,7 +205,17 @@ class _SignUpState extends State<SignUp> {
       ),
     );
   }
-    void _submit() async {
+
+  void _submit() async {
+    String? message = await AuthService.signup(_email, _password, _name);
+    if (message != null) {
+      print("ERROR OCCURED WHEN SIGNING UP");
+    }
+    else {
+      // change to lead to the home screen
+      Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (context) => Profile()));
+    }
+    /*void _submit() async {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
           content: FutureBuilder<String?>(
@@ -211,6 +223,7 @@ class _SignUpState extends State<SignUp> {
             builder: (BuildContext context, AsyncSnapshot<String?> snapshot) {
               if (snapshot.hasData) {
                 if (snapshot.data == null) {
+                 //Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (context) => Profile()));
                   return const Text('Signed up!');
                 } else {
                   return Text(snapshot.data!);
@@ -221,7 +234,7 @@ class _SignUpState extends State<SignUp> {
             },
           ),
         ),
-      );
+      );*/
 
       /*String? message = await AuthService.signup(_email, _password, _name);
       if (message != null) {
