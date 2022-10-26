@@ -1,141 +1,73 @@
 import 'package:flutter/material.dart';
+import 'package:rememberme/screens/modifycard.dart';
+import 'package:rememberme/services/cardservice.dart';
+import 'package:rememberme/widgets/catchpop.dart';
+import 'package:rememberme/widgets/roundedpage.dart';
 
-class CardView extends StatelessWidget
-{
+class CardView extends StatefulWidget {
+  final PersonCard initialCard;
+
+  const CardView({super.key, required this.initialCard});
+
   @override
-
-  Widget build(BuildContext context)
-  {
-    return Scaffold(
-      appBar: AppBar(
-        backgroundColor: Colors.deepOrange[400],
-        elevation: 0,
-        centerTitle: true,
-        title: Text(
-          'Alyssa Brown',
-          style: TextStyle(fontSize: 30),
-        ),
-        leading: IconButton(
-          icon: Icon(
-            Icons.arrow_back,
-            color: Colors.black,
-            size: 40,
-          ),
-          onPressed: () {print("back pressed"); },
-        ),
-
-      ),
-      backgroundColor: Colors.deepOrange[400],
-      body: _Body(),
-
-    );
-  }
+  State<CardView> createState() => _CardViewState();
 }
 
+class _CardViewState extends State<CardView> {
+  late PersonCard _card;
 
-class _Text extends StatelessWidget
-{
   @override
-
-  Widget build(BuildContext context)
-  {
-    return Column(
-          children: <Widget>[
-            Container(
-              width: 400,
-              height: 125,
-              alignment: Alignment(-0.7, -5.0),
-              //make into colum
-              child: Text(
-                'Where We Met',
-                style: TextStyle(
-                  color: Colors.black,
-                  fontSize: 25,
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
-
-            Container(
-              width: 400,
-              height: 125,
-              alignment: Alignment(-0.7, -5.0),
-              //make into colum
-              child: Text(
-                'ECSW',
-                style: TextStyle(
-                  color: Colors.black,
-                  fontSize: 25,
-                  fontStyle: FontStyle.italic,
-                ),
-              ),
-            )
-
-              /*margin: EdgeInsets.only(top: 110, left: 20, right: 20),
-              decoration: BoxDecoration(
-                color: Colors.deepOrange[100],
-                borderRadius: BorderRadius.circular(50),
-              ),
-            ),*/
-          ]
-        );
+  void initState() {
+    _card = widget.initialCard;
+    super.initState();
   }
-}
 
-
-
-class _Body extends StatelessWidget
-{
   @override
-
-  Widget build(BuildContext context)
-  {
-    /*return Column(
-      children: [
-        Expanded(
-            flex: 1,
-            child: Container (
-            )),
-        Expanded(
-            flex: 9,
-            child: Container(
-              decoration: BoxDecoration(
-                  color: Colors.white,
-
-                  borderRadius: BorderRadius.only(
-                      topLeft: Radius.circular(50),
-                      topRight: Radius.circular(50)
-                  )
+  Widget build(BuildContext context) {
+    return CatchPop(
+      popValue: _card,
+      child: RoundedPage(
+        title: _card.name,
+        floatingActionButton: FloatingActionButton(
+          onPressed: () async {
+            PersonCard? res = await Navigator.of(context).push(
+              MaterialPageRoute(
+                builder: (_) => ModifyCard(
+                  existingCard: _card,
+                ),
               ),
-            ))
-      ],
-    ); */
-
-    return Scaffold(
-      body: Center(
-        child: Stack(
-          children: [
-            Container(
-              color: Colors.deepOrange[400],
-            ),
-            Container(
-              width: 411,
-              height: 730,
-              margin: EdgeInsets.only(top: 80),
-              decoration: BoxDecoration(
-                  color: Colors.white,
-
-                  borderRadius: BorderRadius.only(
-                      topLeft: Radius.circular(50),
-                      topRight: Radius.circular(50)
-                  )
+            );
+            if (res != null) {
+              setState(() {
+                _card = res;
+              });
+            }
+          },
+          child: const Icon(Icons.edit),
+        ),
+        onRefresh: () async {
+          var newCard = await CardService.getById(_card.id);
+          setState(() {
+            _card = newCard;
+          });
+        },
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: _card.questions.entries.map((question) {
+            return Card(
+              margin: const EdgeInsets.symmetric(
+                horizontal: 12,
+                vertical: 6,
               ),
-            ),
-          ],
+              color: Theme.of(context).primaryColorLight,
+              child: ListTile(
+                title: Text(question.key),
+                subtitle: Text(question.value),
+              ),
+            );
+          }).toList(),
         ),
       ),
     );
-
   }
-
 }
-

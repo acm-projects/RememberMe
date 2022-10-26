@@ -27,6 +27,22 @@ class CardService {
     });
     return card;
   }
+
+  static Future<List<PersonCard>> getByIds(List<String> ids) async {
+    if (ids.isEmpty) return [];
+    var cardsRef = UserService.getUserDocRef()
+        .collection('cards')
+        .where('__name__', whereIn: ids);
+    var cardsSnapshot = await cardsRef.get();
+    var personCards = cardsSnapshot.docs.map((e) => PersonCard.fromDocument(e));
+    return personCards.toList();
+  }
+
+  static Future<PersonCard> getById(String id) async {
+    var cardRef = UserService.getUserDocRef().collection('cards').doc(id);
+    var cardDoc = await cardRef.get();
+    return PersonCard.fromDocument(cardDoc);
+  }
 }
 
 class PersonCard {

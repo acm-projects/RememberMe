@@ -1,290 +1,71 @@
 import 'package:flutter/material.dart';
+import 'package:rememberme/screens/CardView.dart';
+import 'package:rememberme/services/deckservice.dart';
+import 'package:rememberme/widgets/catchpop.dart';
+import 'package:rememberme/widgets/roundedpage.dart';
 
-class DeckView extends StatelessWidget
-{
+import '../services/cardservice.dart';
+
+class DeckView extends StatefulWidget {
+  const DeckView({super.key, required this.initialDeck});
+
+  final Deck initialDeck;
+
   @override
-
-  Widget build(BuildContext context)
-  {
-    return Scaffold(
-      appBar: AppBar(
-        backgroundColor: Colors.deepOrange[400],
-        elevation: 0,
-        centerTitle: true,
-        title: Text(
-          'CS Class',
-          style: TextStyle(fontSize: 30),
-        ),
-        leading: IconButton(
-          icon: Icon(
-            Icons.arrow_back,
-            color: Colors.black,
-            size: 40,
-          ),
-          onPressed: () {print("back pressed"); },
-        ),
-
-      ),
-      backgroundColor: Colors.deepOrange[400],
-      body: _Body(),
-
-    );
-  }
+  State<DeckView> createState() => _DeckViewState();
 }
 
-class _Body extends StatelessWidget
-{
+class _DeckViewState extends State<DeckView> {
+  late Deck _deck;
+
   @override
+  void initState() {
+    _deck = widget.initialDeck;
+    super.initState();
+  }
 
-  Widget build(BuildContext context)
-  {
-
-    return Scaffold(
-      body: Center(
-        child: Stack(
-          children: [
-            Container(
-              color: Colors.deepOrange[400],
-            ),
-            Container(
-              width: 411,
-              height: 730,
-              margin: EdgeInsets.only(top: 80),
-              decoration: BoxDecoration(
-                  color: Colors.white,
-
-                  borderRadius: BorderRadius.only(
-                      topLeft: Radius.circular(50),
-                      topRight: Radius.circular(50)
-                  )
+  @override
+  Widget build(BuildContext context) {
+    return CatchPop(
+      popValue: _deck,
+      child: RoundedPage(
+        title: _deck.name,
+        onRefresh: () async {
+          var newDeck = await DeckService.getDeckById(_deck.id);
+          setState(() {
+            _deck = newDeck;
+          });
+        },
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: _deck.cards.map((card) {
+            return Card(
+              margin: const EdgeInsets.symmetric(
+                horizontal: 12,
+                vertical: 6,
               ),
-
-            ),
-
-
-            Container(
-              width: 400,
-              height: 125,
-              child: Center(
-                child: Text(
-                  'Alyssa Brown',
-                  style: TextStyle(
-                    color: Colors.black,
-                    fontSize: 25,
-                    fontWeight: FontWeight.bold,
-                  ),
+              color: Theme.of(context).primaryColorLight,
+              child: InkWell(
+                onTap: () async {
+                  PersonCard? res = await Navigator.of(context).push(
+                    MaterialPageRoute(
+                      builder: (_) => CardView(initialCard: card),
+                    ),
+                  );
+                  var newDeck = await DeckService.getDeckById(_deck.id);
+                  setState(() {
+                    _deck = newDeck;
+                  });
+                },
+                child: Container(
+                  padding: const EdgeInsets.all(16),
+                  child: Text(card.name),
                 ),
               ),
-
-
-              margin: EdgeInsets.only(top: 110, left: 20, right: 20),
-              decoration: BoxDecoration(
-                color: Colors.deepOrange[100],
-                borderRadius: BorderRadius.circular(50),
-              ),
-
-            ),
-
-            Container(
-              width: 400,
-              height: 125,
-              child: Center(
-                child: Text(
-                  'Arya Patel',
-                  style: TextStyle(
-                    color: Colors.black,
-                    fontSize: 25,
-                    fontWeight: FontWeight.bold,
-
-                  ),
-                ),
-              ),
-
-              margin: EdgeInsets.only(top: 255, left: 20, right: 20),
-              decoration: BoxDecoration(
-                color: Colors.deepOrange[100],
-                borderRadius: BorderRadius.circular(50),
-              ),
-            ),
-
-            Container(
-              width: 400,
-              height: 125,
-              child: Center(
-                child: Text(
-                  'Braxton White',
-                  style: TextStyle(
-                    color: Colors.black,
-                    fontSize: 25,
-                    fontWeight: FontWeight.bold,
-
-                  ),
-                ),
-              ),
-
-              margin: EdgeInsets.only(top: 400, left: 20, right: 20),
-              decoration: BoxDecoration(
-                color: Colors.deepOrange[100],
-                borderRadius: BorderRadius.circular(50),
-              ),
-            ),
-
-            Container(
-              width: 400,
-              height: 125,
-              child: Center(
-                child: Text(
-                  'Courtney Cox',
-                  style: TextStyle(
-                    color: Colors.black,
-                    fontSize: 25,
-                    fontWeight: FontWeight.bold,
-
-                  ),
-                ),
-              ),
-
-              margin: EdgeInsets.only(top: 545, left: 20, right: 20),
-              decoration: BoxDecoration(
-                color: Colors.deepOrange[100],
-                borderRadius: BorderRadius.circular(50),
-              ),
-            ),
-
-            Container(
-              width: 400,
-              height: 125,
-              child: Center(
-                child: Text(
-                  'Naomi Kurian',
-                  style: TextStyle(
-                    color: Colors.black,
-                    fontSize: 25,
-                    fontWeight: FontWeight.bold,
-
-                  ),
-                ),
-              ),
-
-              margin: EdgeInsets.only(top: 690, left: 20, right: 20),
-              decoration: BoxDecoration(
-                color: Colors.deepOrange[100],
-                borderRadius: BorderRadius.circular(50),
-              ),
-            ),
-
-            /*
-            Container(
-              width: 30,
-              height: 30,
-
-              child: IconButton(
-                padding: EdgeInsets.zero,
-                icon: Icon(
-                  Icons.remove,
-                  color: Colors.black,
-                  size: 20,
-                ),
-                onPressed: () {print("remove card"); },
-              ),
-
-              margin: EdgeInsets.only(top: 110, left: 350),
-              decoration: new BoxDecoration(
-                color: Colors.red,
-                shape: BoxShape.circle,
-              ),
-            ),
-
-            Container(
-              width: 30,
-              height: 30,
-
-              child: IconButton(
-                padding: EdgeInsets.zero,
-                icon: Icon(
-                  Icons.remove,
-                  color: Colors.black,
-                  size: 20,
-                ),
-                onPressed: () {print("remove card"); },
-              ),
-
-              margin: EdgeInsets.only(top: 255, left: 350),
-              decoration: new BoxDecoration(
-                color: Colors.red,
-                shape: BoxShape.circle,
-              ),
-            ),
-
-            Container(
-              width: 30,
-              height: 30,
-
-              child: IconButton(
-                padding: EdgeInsets.zero,
-                icon: Icon(
-                  Icons.remove,
-                  color: Colors.black,
-                  size: 20,
-                ),
-                onPressed: () {print("remove card"); },
-              ),
-
-              margin: EdgeInsets.only(top: 400, left: 350),
-              decoration: new BoxDecoration(
-                color: Colors.red,
-                shape: BoxShape.circle,
-              ),
-            ),
-
-            Container(
-              width: 30,
-              height: 30,
-
-              child: IconButton(
-                padding: EdgeInsets.zero,
-                icon: Icon(
-                  Icons.remove,
-                  color: Colors.black,
-                  size: 20,
-                ),
-                onPressed: () {print("remove card"); },
-              ),
-
-              margin: EdgeInsets.only(top: 545, left: 350),
-              decoration: new BoxDecoration(
-                color: Colors.red,
-                shape: BoxShape.circle,
-              ),
-            ),
-
-            Container(
-              width: 30,
-              height: 30,
-
-              child: IconButton(
-                padding: EdgeInsets.zero,
-                icon: Icon(
-                  Icons.remove,
-                  color: Colors.black,
-                  size: 20,
-                ),
-                onPressed: () {print("remove card"); },
-              ),
-
-              margin: EdgeInsets.only(top: 690, left: 350),
-              decoration: new BoxDecoration(
-                color: Colors.red,
-                shape: BoxShape.circle,
-              ),
-            ),
-*/
-          ],
+            );
+          }).toList(),
         ),
       ),
     );
-
   }
-
 }
-
