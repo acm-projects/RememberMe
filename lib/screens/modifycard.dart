@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:multi_select_flutter/multi_select_flutter.dart';
 import 'package:rememberme/services/cardservice.dart';
 import 'package:rememberme/services/deckservice.dart';
+import 'package:rememberme/widgets/roundedpage.dart';
 
 class ModifyCard extends StatefulWidget {
   const ModifyCard({super.key, this.existingCard});
@@ -42,75 +43,79 @@ class _ModifyCardState extends State<ModifyCard> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
+    return RoundedPage(
       floatingActionButton: FloatingActionButton(
         onPressed: () => _saveCard(),
         child: const Icon(Icons.save),
       ),
-      appBar: AppBar(),
-      body: WillPopScope(
+      title: _name ?? 'New Card',
+      child: WillPopScope(
         onWillPop: _showExitWithoutSaveDialog,
         child: Form(
           key: _formKey,
-          child: ListView(
+          child: Padding(
             padding: const EdgeInsets.all(24),
-            children: <Widget>[
-              Card(
-                margin: const EdgeInsets.symmetric(vertical: 6),
-                child: Padding(
-                  padding: const EdgeInsets.all(12),
-                  child: TextFormField(
-                    decoration: const InputDecoration(hintText: 'Name'),
-                    validator: (value) {
-                      if (value == null || value.isEmpty) {
-                        return 'Please enter a name';
-                      }
-                      return null;
-                    },
-                    initialValue: _name,
-                    onSaved: (newValue) => _name = newValue,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: <Widget>[
+                Card(
+                  margin: const EdgeInsets.symmetric(vertical: 6),
+                  child: Padding(
+                    padding: const EdgeInsets.all(12),
+                    child: TextFormField(
+                      decoration: const InputDecoration(hintText: 'Name'),
+                      validator: (value) {
+                        if (value == null || value.isEmpty) {
+                          return 'Please enter a name';
+                        }
+                        return null;
+                      },
+                      initialValue: _name,
+                      onChanged: (value) => setState(() => _name = value),
+                      onSaved: (newValue) => _name = newValue,
+                    ),
                   ),
                 ),
-              ),
-              Card(
-                margin: const EdgeInsets.symmetric(vertical: 6),
-                child: Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 6),
-                  child: TextButton.icon(
-                    onPressed: () => _showDeckDialog(),
-                    style: TextButton.styleFrom(
-                      alignment: Alignment.centerLeft,
-                    ),
-                    icon: const Icon(
-                      Icons.add,
-                      color: Colors.black,
-                    ),
-                    label: Text(
-                      ' Add to Deck(s)',
-                      style: TextStyle(
-                        color: Theme.of(context).hintColor,
+                Card(
+                  margin: const EdgeInsets.symmetric(vertical: 6),
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 6),
+                    child: TextButton.icon(
+                      onPressed: () => _showDeckDialog(),
+                      style: TextButton.styleFrom(
+                        alignment: Alignment.centerLeft,
+                      ),
+                      icon: const Icon(
+                        Icons.add,
+                        color: Colors.black,
+                      ),
+                      label: Text(
+                        ' Add to Deck(s)',
+                        style: TextStyle(
+                          color: Theme.of(context).hintColor,
+                        ),
                       ),
                     ),
                   ),
                 ),
-              ),
-              ..._questionWidgets,
-              RawMaterialButton(
-                onPressed: () {
-                  setState(() {
-                    _questionWidgets.add(
-                      _getDefaultQuestionWidget(null, null),
-                    );
-                  });
-                },
-                fillColor: Theme.of(context).primaryColor,
-                shape: const CircleBorder(),
-                child: const Icon(
-                  Icons.add,
-                  color: Colors.white,
+                ..._questionWidgets,
+                RawMaterialButton(
+                  onPressed: () {
+                    setState(() {
+                      _questionWidgets.add(
+                        _getDefaultQuestionWidget(null, null),
+                      );
+                    });
+                  },
+                  fillColor: Theme.of(context).primaryColor,
+                  shape: const CircleBorder(),
+                  child: const Icon(
+                    Icons.add,
+                    color: Colors.white,
+                  ),
                 ),
-              ),
-            ],
+              ],
+            ),
           ),
         ),
       ),
@@ -163,7 +168,7 @@ class _ModifyCardState extends State<ModifyCard> {
         var data = doc.data();
         decks[doc.id] = data['name'];
         if (widget.existingCard != null) {
-          List<String> cards = data['cards'];
+          List cards = data['cards'];
           if (cards.contains(widget.existingCard!.id)) {
             _selectedDecks.add(doc.id);
           }
@@ -191,10 +196,8 @@ class _ModifyCardState extends State<ModifyCard> {
               );
             } else {
               // SHOW ERROR MESSAGE
-              return AlertDialog(
-                content: Text(
-                  snapshot.error?.toString() ?? 'There was an unknown error.',
-                ),
+              return const AlertDialog(
+                content: Text('There was an error.'),
               );
             }
           } else {
@@ -209,45 +212,44 @@ class _ModifyCardState extends State<ModifyCard> {
   }
 
   void _saveCard() async {
-    if (_formKey.currentState!.validate()) {
-      _questions = {}; // Clear old values
-      _formKey.currentState!.save();
+    if (!_formKey.currentState!.validate()) return;
+    _questions = {}; // Clear old values
+    _formKey.currentState!.save();
 
-      try {
-        PersonCard card;
-        if (widget.existingCard == null) {
-          card = await CardService.addCard(
-            name: _name!,
-            questions: _questions,
-          );
-        } else {
-          card = await CardService.modifyCard(PersonCard(
-            id: widget.existingCard!.id,
-            name: _name!,
-            questions: _questions,
-          ));
-        }
+    try {
+      PersonCard card;
+      if (widget.existingCard == null) {
+        card = await CardService.addCard(
+          name: _name!,
+          questions: _questions,
+        );
+      } else {
+        card = await CardService.modifyCard(PersonCard(
+          id: widget.existingCard!.id,
+          name: _name!,
+          questions: _questions,
+        ));
+      }
 
-        // Only update decks if the deck status was requested at all
-        if (_decksFuture != null) {
-          var allDecks = await _decksFuture!;
-          var removeDecks =
-              allDecks.keys.where((e) => !_selectedDecks.contains(e)).toList();
-          await DeckService.assignCardsToDecks(
-            cardIds: [card.id],
-            addDecksIds: _selectedDecks,
-            removeDecksIds: removeDecks,
-          );
-        }
-
-        if (mounted) Navigator.of(context).pop(card);
-      } on FirebaseException catch (e) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text(e.message ?? 'There was an unknown error.'),
-          ),
+      // Only update decks if the deck status was requested at all
+      if (_decksFuture != null) {
+        var allDecks = await _decksFuture!;
+        var removeDecks =
+            allDecks.keys.where((e) => !_selectedDecks.contains(e)).toList();
+        await DeckService.assignCardsToDecks(
+          cardIds: [card.id],
+          addDecksIds: _selectedDecks,
+          removeDecksIds: removeDecks,
         );
       }
+
+      if (mounted) Navigator.of(context).pop(card);
+    } on FirebaseException catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(e.message ?? 'There was an unknown error.'),
+        ),
+      );
     }
   }
 }
@@ -262,7 +264,7 @@ class _QuestionWidget extends FormField<MapEntry<String?, String?>> {
   }) : super(
           onSaved: onSaved,
           key: key,
-          initialValue: MapEntry(initialQuestion, initialQuestion),
+          initialValue: MapEntry(initialQuestion, initialAnswer),
           builder: (FormFieldState<MapEntry<String?, String?>> state) {
             return Card(
               margin: const EdgeInsets.symmetric(vertical: 6),

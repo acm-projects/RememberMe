@@ -1,292 +1,172 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter_speed_dial/flutter_speed_dial.dart';
+import 'package:rememberme/screens/deckview.dart';
 import 'package:rememberme/screens/modifycard.dart';
-//Note, pubspec.yaml has been changed to make this work
-//Also, I've had to use "flutter run --no-sound-null-safety" in the terminal
-//And then hot reload works by typing "r" in the terminal
-
+import 'package:rememberme/services/deckservice.dart';
+import 'package:rememberme/widgets/roundedpage.dart';
 
 class Homepage extends StatefulWidget {
-const Homepage({Key? key}) : super(key: key);
+  const Homepage({Key? key}) : super(key: key);
 
-@override
-State<Homepage> createState() => _Homepage();
+  @override
+  State<Homepage> createState() => _HomepageState();
 }
 
-class _Homepage extends State<Homepage> {
+class _HomepageState extends State<Homepage> {
+  Future<List<Deck>> _decksFuture = DeckService.getAllDecks();
+
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      //STARTS WITH LOTS OF STUFF WITHIN SCAFFOLD!
-        appBar: PreferredSize(
-          //WITHIN THE APPBAR, FIRSTLY DEALING WITH CHANGED SIZE
-            preferredSize: Size.fromHeight(100.0),
-            child: AppBar(
-              //HERE WE ADD A BACK BUTTON (CONNECT SCREEN LATER)
-              automaticallyImplyLeading: false,
-              leadingWidth: 100,
-              leading: ElevatedButton.icon(
-                  onPressed: () => Navigator.of(context).pop(),
-                  icon: const Icon(Icons.arrow_left, size: 45),
-                  label: const Text(''),
-                  style: ElevatedButton.styleFrom(
-                      elevation: 0,
-                      backgroundColor: Colors.transparent)),
-
-              //THIS ADDS THE TEXT IN THE APPBAR
-              title: Text('Welcome'),
-              centerTitle: true,
-              titleTextStyle: TextStyle(
-                  fontSize: 25,
-                  fontWeight: FontWeight.bold
-              ),
-              backgroundColor: Color.fromARGB(255, 253, 142, 84),
-
-              //THIS IS TO ADD THE SEARCH BUTTON ICON AND MAKE IT SHOW SEARCH BAR
-              actions: [
-                IconButton(
-                  onPressed: () {
-                    // method to show the search bar
-                    showSearch(
-                        context: context,
-                        // delegate to customize the search bar
-                        delegate: CustomSearchDelegate()
-                    );
-                  },
-                  icon: const Icon(Icons.search),
-                )
-              ],
-            )
-        ),
-
-        //For plus button
-        floatingActionButton: SpeedDial(
-          icon: Icons.add,
-          activeIcon: Icons.close,
-          backgroundColor: Color.fromARGB(255, 253, 142, 84),
-          spaceBetweenChildren: 10,
-          children: [
-            SpeedDialChild(
-              label: 'New Card',
-              child: const Icon(Icons.note_add),
-              onTap: () => Navigator.of(context).push(
-                MaterialPageRoute(builder: (_) => const ModifyCard()),
-              ),
+    return RoundedPage(
+      title: 'Welcome!',
+      floatingActionButton: SpeedDial(
+        icon: Icons.add,
+        activeIcon: Icons.close,
+        spaceBetweenChildren: 10,
+        children: [
+          SpeedDialChild(
+            label: 'New Card',
+            child: const Icon(Icons.note_add),
+            onTap: () => Navigator.of(context).push(
+              MaterialPageRoute(builder: (_) => const ModifyCard()),
             ),
-            SpeedDialChild(
-              label: 'New Deck',
-              child: const Icon(Icons.collections_bookmark),
-            ),
-          ],
-        ),
-
-        //HERE THE BODY STARTS, MAKE INTO A COLUMN WITH CONTAINERS AND SUCH
-        body: Column(
-          children: <Widget>[
-            //For achievement heading on the Homepage--------------------------
-            Container(
-              margin: EdgeInsets.fromLTRB(0, 30, 0, 10),
-              child: Text(
-                'Achievement:',
-                style: TextStyle(fontSize: 25, fontWeight: FontWeight.bold),
-              ),
-            ),
-            //For the actual achievement---------------------
-            Container(
-              margin: EdgeInsets.fromLTRB(0, 0, 0, 10),
-              child: Text(
-                'Added 10 cards!',
-                style: TextStyle(
-                  fontSize: 25,
-                ),
-              ),
-            ),
-
-            //THIS CONTAINER IS FOR THE "Decks" TEXT
-            Container(
-              margin: EdgeInsets.fromLTRB(0, 30, 0, 0),
-              child: Text(
-                'Decks',
-                style: TextStyle(fontSize: 25, fontWeight: FontWeight.bold),
-              ),
-            ),
-
-            //THIS IS TO SET UP THE CAROUSEL
-            CarouselSlider(
-              options: CarouselOptions(
-                height: 200.0,
-                autoPlay: true,
-                autoPlayInterval: Duration(seconds: 3),
-                autoPlayAnimationDuration: Duration(milliseconds: 800),
-                autoPlayCurve: Curves.fastOutSlowIn,
-                pauseAutoPlayOnTouch: true,
-                aspectRatio: 2.0,
-                onPageChanged: (index, reason) {
-                  setState(() {
-                    _currentIndex = index;
-                  });
-                },
-              ),
-              items: cardList.map((card) {
-                return Builder(builder: (BuildContext context) {
-                  return Container(
-                    height: MediaQuery.of(context).size.height,
-                    width: MediaQuery.of(context).size.width,
-                    child: Card(
-                      color: Colors.white,
-                      child: card,
-                    ),
-                  );
-                });
-              }).toList(),
-            ),
-
-
-
-            //THIS IS FOR A TEXT BUTTON TO SELECT 'Memory Games'
-            //CHANGE ON-PRESSED ACTION TO GO TO ANOTHER SCREEN
-            Container(
-              margin: EdgeInsets.fromLTRB(25, 40, 25, 25),
-              child: TextButton(
-                child: Text('Memory Games'),
-                style: TextButton.styleFrom(
-                  primary: Colors.white,
-                  backgroundColor: Colors.deepOrange[300],
-                  onSurface: Colors.grey,
-                  padding: EdgeInsets.fromLTRB(90, 30, 90, 30),
-                  shape: const BeveledRectangleBorder(
-                      borderRadius: BorderRadius.all(Radius.circular(5))),
-                  textStyle: TextStyle(fontSize: 25),
-                ),
-                onPressed: () {
-                  print('Pressed');
-                },
-              ),
-            ),
-          ],
+          ),
+          SpeedDialChild(
+            label: 'New Deck',
+            child: const Icon(Icons.collections_bookmark),
+          ),
+        ],
+      ),
+      appBarActions: [
+        IconButton(
+          onPressed: () {
+            // method to show the search bar
+            showSearch(
+                context: context,
+                // delegate to customize the search bar
+                delegate: CustomSearchDelegate());
+          },
+          icon: const Icon(Icons.search),
         )
-    );
-  }
-}
+      ],
+      child: Column(
+        children: <Widget>[
+          //For achievement heading on the Homepage--------------------------
+          Container(
+            margin: EdgeInsets.fromLTRB(0, 30, 0, 10),
+            child: Text(
+              'Achievement:',
+              style: TextStyle(fontSize: 25, fontWeight: FontWeight.bold),
+            ),
+          ),
+          //For the actual achievement---------------------
+          Container(
+            margin: EdgeInsets.fromLTRB(0, 0, 0, 10),
+            child: Text(
+              'Added 10 cards!',
+              style: TextStyle(
+                fontSize: 25,
+              ),
+            ),
+          ),
 
-//OUTSIDE OF SCAFFOLD:
+          //THIS CONTAINER IS FOR THE "Decks" TEXT
+          Container(
+            margin: const EdgeInsets.fromLTRB(0, 30, 0, 0),
+            child: const Text(
+              'Decks',
+              style: TextStyle(fontSize: 25, fontWeight: FontWeight.bold),
+            ),
+          ),
 
-//THIS IS FOR THE CARDS ('ITEMS') LIST FOR THE CAROUSEL SLIDER
-int _currentIndex = 0;
-List cardList = [Item1(), Item2(), Item3(), Item4()];
-List<T> map<T>(List list, Function handler) {
-  List<T> result = [];
-  for (var i = 0; i < list.length; i++) {
-    result.add(handler(i, list[i]));
-  }
-  return result;
-}
+          //THIS IS TO SET UP THE CAROUSEL
+          FutureBuilder<List<Deck>>(
+            future: _decksFuture,
+            builder: (context, snapshot) {
+              List<Widget> items = [];
 
-//THIS IS TO MAKE ITEM1 (CARD ONE) IN CAROUSEL SLIDER
+              if (snapshot.hasData || snapshot.hasError) {
+                if (snapshot.data != null) {
+                  items = snapshot.data!.map((deck) {
+                    return Card(
+                      color: Theme.of(context).primaryColorLight,
+                      child: InkWell(
+                        onTap: () async {
+                          await Navigator.of(context).push(
+                            MaterialPageRoute(
+                              builder: (_) => DeckView(
+                                initialDeck: deck,
+                              ),
+                            ),
+                          );
+                          setState(() {
+                            _decksFuture = DeckService.getAllDecks();
+                          });
+                        },
+                        child: Center(
+                            child: Text(
+                          deck.name,
+                          style: const TextStyle(fontSize: 22),
+                        )),
+                      ),
+                    );
+                  }).toList();
+                } else {
+                  items = [
+                    const Card(
+                      child: Center(
+                        child: Text('There was an error loading decks.'),
+                      ),
+                    ),
+                  ];
+                }
+              } else {
+                items = [
+                  const Center(
+                    child: CircularProgressIndicator(),
+                  ),
+                ];
+              }
 
-//CHANGE ON-PRESSED ACTION TO LEAD TO ANOTHER SCREEN
-class Item1 extends StatelessWidget {
-  const Item1({Key? key}) : super(key: key);
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      margin: EdgeInsets.fromLTRB(5, 20, 5, 20),
-      child: TextButton(
-        child: Text('Master Deck'),
-        style: TextButton.styleFrom(
-            primary: Colors.black,
-            backgroundColor: Colors.deepOrange[200],
-            onSurface: Colors.grey,
-            padding: EdgeInsets.fromLTRB(90, 30, 90, 30),
-            shape: const BeveledRectangleBorder(
-                borderRadius: BorderRadius.all(Radius.circular(12))),
-            textStyle: TextStyle(fontSize: 25, fontStyle: FontStyle.italic)),
-        onPressed: () {
-          print('Pressed');
-        },
-      ),
-    );
-  }
-}
+              return CarouselSlider(
+                options: CarouselOptions(
+                  height: 160.0,
+                  autoPlay: true,
+                  autoPlayInterval: const Duration(seconds: 3),
+                  autoPlayAnimationDuration: const Duration(milliseconds: 800),
+                  autoPlayCurve: Curves.fastOutSlowIn,
+                  pauseAutoPlayOnTouch: true,
+                  aspectRatio: 2.0,
+                ),
+                items: items,
+              );
+            },
+          ),
 
-//THIS IS TO MAKE ITEM2 (CARD 2) IN CAROUSEL
-
-//CHANGE ON-PRESSED ACTION TO LEAD TO ANOTHER SCREEN
-class Item2 extends StatelessWidget {
-  const Item2({Key? key}) : super(key: key);
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      margin: EdgeInsets.fromLTRB(5, 20, 5, 20),
-      child: TextButton(
-        child: Text('Deck 1'),
-        style: TextButton.styleFrom(
-            primary: Colors.black,
-            backgroundColor: Colors.deepOrange[200],
-            onSurface: Colors.grey,
-            padding: EdgeInsets.fromLTRB(90, 40, 90, 40),
-            shape: const BeveledRectangleBorder(
-                borderRadius: BorderRadius.all(Radius.circular(12))),
-            textStyle: TextStyle(fontSize: 25, fontStyle: FontStyle.italic)),
-        onPressed: () {
-          print('Pressed');
-        },
-      ),
-    );
-  }
-}
-
-//ITEM 3 (CARD 3) IN CAROUSEL
-
-//CHANGE ON-PRESSED ACTION TO LEAD TO ANOTHER SCREEN
-class Item3 extends StatelessWidget {
-  const Item3({Key? key}) : super(key: key);
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      margin: EdgeInsets.fromLTRB(5, 20, 5, 20),
-      child: TextButton(
-        child: Text('Deck 2'),
-        style: TextButton.styleFrom(
-            primary: Colors.black,
-            backgroundColor: Colors.deepOrange[200],
-            onSurface: Colors.grey,
-            padding: EdgeInsets.fromLTRB(90, 40, 90, 40),
-            shape: const BeveledRectangleBorder(
-                borderRadius: BorderRadius.all(Radius.circular(12))),
-            textStyle: TextStyle(fontSize: 25, fontStyle: FontStyle.italic)),
-        onPressed: () {
-          print('Pressed');
-        },
-      ),
-    );
-  }
-}
-
-//ITEM 4 (CARD 4) IN CAROUSEL
-
-//CHANGE ON-PRESSED ACTION TO LEAD TO ANOTHER SCREEN
-class Item4 extends StatelessWidget {
-  const Item4({Key? key}) : super(key: key);
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      margin: EdgeInsets.fromLTRB(5, 20, 5, 20),
-      child: TextButton(
-        child: Text('Deck 3'),
-        style: TextButton.styleFrom(
-            primary: Colors.black,
-            backgroundColor: Colors.deepOrange[200],
-            onSurface: Colors.grey,
-            padding: EdgeInsets.fromLTRB(90, 40, 90, 40),
-            shape: const BeveledRectangleBorder(
-                borderRadius: BorderRadius.all(Radius.circular(12))),
-            textStyle: TextStyle(fontSize: 25, fontStyle: FontStyle.italic)),
-        onPressed: () {
-          print('Pressed');
-        },
+          //THIS IS FOR A TEXT BUTTON TO SELECT 'Memory Games'
+          //CHANGE ON-PRESSED ACTION TO GO TO ANOTHER SCREEN
+          Container(
+            margin: EdgeInsets.fromLTRB(25, 40, 25, 25),
+            child: TextButton(
+              style: TextButton.styleFrom(
+                foregroundColor: Colors.white,
+                backgroundColor: Theme.of(context).primaryColorDark,
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 60,
+                  vertical: 30,
+                ),
+                shape: const BeveledRectangleBorder(
+                    borderRadius: BorderRadius.all(Radius.circular(5))),
+                textStyle: TextStyle(fontSize: 25),
+              ),
+              onPressed: () {
+                print('Pressed');
+              },
+              child: Text('Memory Games'),
+            ),
+          ),
+        ],
       ),
     );
   }

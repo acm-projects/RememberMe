@@ -3,7 +3,8 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'cardservice.dart';
 import 'userservice.dart';
 
-typedef DeckDocs = List<QueryDocumentSnapshot<Map<String, dynamic>>>;
+typedef QueryDeckDoc = QueryDocumentSnapshot<Map<String, dynamic>>;
+typedef DeckDoc = DocumentSnapshot<Map<String, dynamic>>;
 
 class DeckService {
   static Future<Deck> getMasterDeck() async {
@@ -21,7 +22,7 @@ class DeckService {
     return UserService.getUserDocRef().collection('decks');
   }
 
-  static Future<DeckDocs> getAllDeckDocs() async {
+  static Future<List<QueryDeckDoc>> getAllDeckDocs() async {
     var decksSnapshot = await getDecksRef().get();
     return decksSnapshot.docs;
   }
@@ -35,7 +36,7 @@ class DeckService {
     for (var elem in docs) {
       if (elem.exists) {
         var deckData = elem.data();
-        List<String> cardIds = deckData['cards'];
+        List cardIds = deckData['cards'];
         decks.add(Deck(
           id: elem.id,
           name: deckData['name'],
@@ -62,15 +63,11 @@ class DeckService {
   /// Creates a new deck. Returns a popluated Deck object
   static Future<Deck> addAndReturnDeck(String name, List<String> cards) async {
     var id = await addDeck(name, cards);
-    var cardsRef = UserService.getUserDocRef()
-        .collection('cards')
-        .where('__name__', whereIn: cards);
-    var cardsSnapshot = await cardsRef.get();
-    var personCards = cardsSnapshot.docs.map((e) => PersonCard.fromDocument(e));
+    var personCards = await CardService.getByIds(cards);
     return Deck(
       id: id,
       name: name,
-      cards: personCards.toList(),
+      cards: personCards,
     );
   }
 
@@ -98,6 +95,22 @@ class DeckService {
       });
     }
     await batch.commit();
+  }
+
+  static Future<Deck> getDeckFromDoc(DeckDoc doc) async {
+    List<dynamic> cards = doc['cards'];
+    List<String> mappedCards = cards.map((elem) => elem.toString()).toList();
+    return Deck(
+      id: doc.id,
+      name: doc['name'],
+      cards: await CardService.getByIds(mappedCards),
+    );
+  }
+
+  static Future<Deck> getDeckById(String id) async {
+    var deckRef = getDecksRef().doc(id);
+    var deckDoc = await deckRef.get();
+    return await getDeckFromDoc(deckDoc);
   }
 }
 
