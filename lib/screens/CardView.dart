@@ -54,6 +54,7 @@ class _Text extends StatelessWidget
                   fontWeight: FontWeight.bold,
                 ),
               ),
+            )
 
             Container(
               width: 400,
