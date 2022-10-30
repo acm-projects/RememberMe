@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:rememberme/screens/modifycard.dart';
 import 'package:rememberme/services/cardservice.dart';
+import 'package:rememberme/widgets/cardavatar.dart';
 import 'package:rememberme/widgets/catchpop.dart';
 import 'package:rememberme/widgets/roundedpage.dart';
 
@@ -27,7 +28,8 @@ class _CardViewState extends State<CardView> {
     return CatchPop(
       popValue: _card,
       child: RoundedPage(
-        title: _card.name,
+        bodyMargin: 0,
+        roundedMargin: 200,
         floatingActionButton: FloatingActionButton(
           onPressed: () async {
             PersonCard? res = await Navigator.of(context).push(
@@ -53,19 +55,53 @@ class _CardViewState extends State<CardView> {
         },
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: _card.questions.entries.map((question) {
-            return Card(
-              margin: const EdgeInsets.symmetric(
-                horizontal: 12,
-                vertical: 6,
+          children: [
+            Container(
+              padding: const EdgeInsets.all(20),
+              margin: const EdgeInsets.only(bottom: 40),
+              child: Row(
+                children: [
+                  Container(
+                    margin: const EdgeInsets.only(right: 16),
+                    decoration: BoxDecoration(
+                      border: Border.all(
+                        color: Colors.black12,
+                        width: 4,
+                      ),
+                      borderRadius: const BorderRadius.all(Radius.circular(90)),
+                    ),
+                    child: CardAvatar(
+                      card: _card,
+                      radius: 64,
+                    ),
+                  ),
+                  Flexible(
+                    child: Text(
+                      _card.name,
+                      style: const TextStyle(
+                        fontSize: 32,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.white,
+                      ),
+                    ),
+                  ),
+                ],
               ),
-              color: Theme.of(context).primaryColorLight,
-              child: ListTile(
-                title: Text(question.key),
-                subtitle: Text(question.value),
-              ),
-            );
-          }).toList(),
+            ),
+            ..._card.questions.entries.map((question) {
+              return Card(
+                margin: const EdgeInsets.symmetric(
+                  horizontal: 12,
+                  vertical: 6,
+                ),
+                color: Theme.of(context).primaryColorLight,
+                child: ListTile(
+                  title: Text(question.key),
+                  subtitle: Text(question.value),
+                ),
+              );
+            }).toList(),
+          ],
         ),
       ),
     );

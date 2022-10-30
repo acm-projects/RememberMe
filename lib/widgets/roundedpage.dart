@@ -7,6 +7,8 @@ class RoundedPage extends StatelessWidget {
     this.floatingActionButton,
     this.onRefresh,
     this.appBarActions,
+    this.roundedMargin = 20,
+    this.bodyMargin = 40,
     required this.child,
   });
 
@@ -15,6 +17,8 @@ class RoundedPage extends StatelessWidget {
   final Widget? floatingActionButton;
   final Future<void> Function()? onRefresh;
   final List<Widget>? appBarActions;
+  final double roundedMargin;
+  final double bodyMargin;
 
   @override
   Widget build(BuildContext context) {
@@ -50,12 +54,12 @@ class RoundedPage extends StatelessWidget {
         Stack(
           children: [
             Container(
-              height: MediaQuery.of(context).size.height * 0.5,
+              height: MediaQuery.of(context).size.height,
               color: Theme.of(context).primaryColor,
             ),
             Container(
               height: MediaQuery.of(context).size.height,
-              margin: const EdgeInsets.only(top: 20),
+              margin: EdgeInsets.only(top: roundedMargin),
               decoration: const BoxDecoration(
                 color: Colors.white,
                 borderRadius: BorderRadius.only(
@@ -65,7 +69,7 @@ class RoundedPage extends StatelessWidget {
               ),
             ),
             Container(
-              margin: const EdgeInsets.only(top: 40),
+              margin: EdgeInsets.only(top: bodyMargin),
               child: child,
             ),
           ],
