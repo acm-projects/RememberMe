@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter_speed_dial/flutter_speed_dial.dart';
+import 'package:rememberme/screens/CardView.dart';
 import 'package:rememberme/screens/deckview.dart';
 import 'package:rememberme/screens/modifycard.dart';
+import 'package:rememberme/services/cardservice.dart';
 import 'package:rememberme/services/deckservice.dart';
 import 'package:rememberme/widgets/roundedpage.dart';
 
@@ -15,6 +17,7 @@ class Homepage extends StatefulWidget {
 
 class _HomepageState extends State<Homepage> {
   Future<List<Deck>> _decksFuture = DeckService.getAllDecks();
+  List<Deck> _decks = [];
 
   @override
   Widget build(BuildContext context) {
@@ -45,7 +48,9 @@ class _HomepageState extends State<Homepage> {
             showSearch(
                 context: context,
                 // delegate to customize the search bar
-                delegate: CustomSearchDelegate());
+                delegate: _CustomSearchDelegate(
+                  cards: _decks.firstWhere((elem) => elem.isMaster).cards,
+                ));
           },
           icon: const Icon(Icons.search),
         )
@@ -88,7 +93,8 @@ class _HomepageState extends State<Homepage> {
 
               if (snapshot.hasData || snapshot.hasError) {
                 if (snapshot.data != null) {
-                  items = snapshot.data!.map((deck) {
+                  _decks = snapshot.data!;
+                  items = _decks.map((deck) {
                     return Card(
                       color: Theme.of(context).primaryColorLight,
                       child: InkWell(
@@ -172,21 +178,10 @@ class _HomepageState extends State<Homepage> {
   }
 }
 
-//THIS IS SETTING UP THE LIST OF NAMES FOR THE SEARCHBAR
+class _CustomSearchDelegate extends SearchDelegate {
+  final List<PersonCard> cards;
 
-//EDIT THIS TO BE DECKS ADDED??
-class CustomSearchDelegate extends SearchDelegate {
-  // Demo list to show querying
-  List<String> searchTerms = [
-    "Apple",
-    "Banana",
-    "Mango",
-    "Pear",
-    "Watermelons",
-    "Blueberries",
-    "Pineapples",
-    "Strawberries"
-  ];
+  _CustomSearchDelegate({required this.cards});
 
   //MORE CODE FOR MAKING THE SEARCHBAR WORK:
   // first overwrite to
@@ -217,31 +212,21 @@ class CustomSearchDelegate extends SearchDelegate {
   // third overwrite to show query result
   @override
   Widget buildResults(BuildContext context) {
-    List<String> matchQuery = [];
-    for (var fruit in searchTerms) {
-      if (fruit.toLowerCase().contains(query.toLowerCase())) {
-        matchQuery.add(fruit);
-      }
-    }
-    return ListView.builder(
-      itemCount: matchQuery.length,
-      itemBuilder: (context, index) {
-        var result = matchQuery[index];
-        return ListTile(
-          title: Text(result),
-        );
-      },
-    );
+    return _getListWidgetFromQuery();
   }
 
   // last overwrite to show the
   // querying process at the runtime
   @override
   Widget buildSuggestions(BuildContext context) {
-    List<String> matchQuery = [];
-    for (var fruit in searchTerms) {
-      if (fruit.toLowerCase().contains(query.toLowerCase())) {
-        matchQuery.add(fruit);
+    return _getListWidgetFromQuery();
+  }
+
+  Widget _getListWidgetFromQuery() {
+    List<PersonCard> matchQuery = [];
+    for (var card in cards) {
+      if (card.name.toLowerCase().contains(query.toLowerCase())) {
+        matchQuery.add(card);
       }
     }
     return ListView.builder(
@@ -249,7 +234,12 @@ class CustomSearchDelegate extends SearchDelegate {
       itemBuilder: (context, index) {
         var result = matchQuery[index];
         return ListTile(
-          title: Text(result),
+          title: Text(result.name),
+          onTap: () => Navigator.of(context).push(
+            MaterialPageRoute(
+              builder: (context) => CardView(initialCard: result),
+            ),
+          ),
         );
       },
     );

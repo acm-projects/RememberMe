@@ -1,8 +1,12 @@
+import 'dart:io';
+
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:multi_select_flutter/multi_select_flutter.dart';
 import 'package:rememberme/services/cardservice.dart';
 import 'package:rememberme/services/deckservice.dart';
+import 'package:rememberme/widgets/cardavatar.dart';
 import 'package:rememberme/widgets/roundedpage.dart';
 
 class ModifyCard extends StatefulWidget {
@@ -20,6 +24,7 @@ class _ModifyCardState extends State<ModifyCard> {
   String? _name;
   Map<String, String> _questions = {};
   final List<_QuestionWidget> _questionWidgets = [];
+  String? _cardImage;
 
   List<String> _selectedDecks = [];
   Future<Map<String, String>>? _decksFuture;
@@ -62,17 +67,32 @@ class _ModifyCardState extends State<ModifyCard> {
                   margin: const EdgeInsets.symmetric(vertical: 6),
                   child: Padding(
                     padding: const EdgeInsets.all(12),
-                    child: TextFormField(
-                      decoration: const InputDecoration(hintText: 'Name'),
-                      validator: (value) {
-                        if (value == null || value.isEmpty) {
-                          return 'Please enter a name';
-                        }
-                        return null;
-                      },
-                      initialValue: _name,
-                      onChanged: (value) => setState(() => _name = value),
-                      onSaved: (newValue) => _name = newValue,
+                    child: Row(
+                      children: [
+                        IconButton(
+                          padding: const EdgeInsets.only(right: 8),
+                          splashRadius: 12,
+                          icon: CardAvatar(
+                            card: widget.existingCard,
+                            localImage: _cardImage,
+                          ),
+                          onPressed: () => _showImagePickerDialog(),
+                        ),
+                        Expanded(
+                          child: TextFormField(
+                            decoration: const InputDecoration(hintText: 'Name'),
+                            validator: (value) {
+                              if (value == null || value.isEmpty) {
+                                return 'Please enter a name';
+                              }
+                              return null;
+                            },
+                            initialValue: _name,
+                            onChanged: (value) => setState(() => _name = value),
+                            onSaved: (newValue) => _name = newValue,
+                          ),
+                        ),
+                      ],
                     ),
                   ),
                 ),
@@ -211,6 +231,20 @@ class _ModifyCardState extends State<ModifyCard> {
     );
   }
 
+  void _showImagePickerDialog() async {
+    var picker = ImagePicker();
+    var image = await picker.pickImage(
+      source: ImageSource.gallery,
+      maxHeight: 512,
+      maxWidth: 512,
+    );
+    if (image != null) {
+      setState(() {
+        _cardImage = image.path;
+      });
+    }
+  }
+
   void _saveCard() async {
     if (!_formKey.currentState!.validate()) return;
     _questions = {}; // Clear old values
@@ -229,6 +263,14 @@ class _ModifyCardState extends State<ModifyCard> {
           name: _name!,
           questions: _questions,
         ));
+      }
+      // Update image if needed
+      if (_cardImage != null) {
+        var err = await CardService.updateCardImage(card.id, File(_cardImage!));
+        if (err != null) {
+          // Recreate the error because firebase is stupid
+          throw err;
+        }
       }
 
       // Only update decks if the deck status was requested at all

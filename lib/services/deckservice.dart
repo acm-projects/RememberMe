@@ -73,23 +73,21 @@ class DeckService {
 
   static Future<void> assignCardsToDecks({
     required List<String> cardIds,
-    List<String>? addDecksIds,
-    List<String>? removeDecksIds,
+    List<String> addDecksIds = const [],
+    List<String> removeDecksIds = const [],
   }) async {
-    if (cardIds.isEmpty ||
-        ((addDecksIds == null || addDecksIds.isEmpty) &&
-            (removeDecksIds == null || removeDecksIds.isEmpty))) {
+    if (cardIds.isEmpty || (addDecksIds.isEmpty && removeDecksIds.isEmpty)) {
       return;
     }
 
     final batch = FirebaseFirestore.instance.batch();
     var decksRef = getDecksRef();
-    for (String id in addDecksIds!) {
+    for (String id in addDecksIds) {
       batch.update(decksRef.doc(id), {
         'cards': FieldValue.arrayUnion(cardIds),
       });
     }
-    for (String id in removeDecksIds!) {
+    for (String id in removeDecksIds) {
       batch.update(decksRef.doc(id), {
         'cards': FieldValue.arrayRemove(cardIds),
       });
@@ -108,6 +106,7 @@ class DeckService {
   }
 
   static Future<Deck> getDeckById(String id) async {
+    if (id == 'master') return await getMasterDeck();
     var deckRef = getDecksRef().doc(id);
     var deckDoc = await deckRef.get();
     return await getDeckFromDoc(deckDoc);
