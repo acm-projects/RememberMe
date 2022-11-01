@@ -14,4 +14,43 @@ class UserService {
       return userColRef.doc(userId);
     }
   }
+
+  static Future<int> updateUserLoginDate() async {
+    FirebaseFirestore db = FirebaseFirestore.instance;
+    if (!AuthService.isUserSignedIn()){
+      return 0;
+    }
+    var doc = await getUserDocRef().get();
+    var data = doc.data();
+    var dayslogged = 0;
+    var currenttime = DateTime.now();
+    if (data!.containsKey('lastlogin') && data.containsKey('dayslogged')) {
+      Timestamp date = data['lastlogin'];
+      var difference = DateTime.now().difference(date.toDate());
+
+      if (difference.inDays < 1) {
+        dayslogged = data['dayslogged'];
+        currenttime = date.toDate();
+      } else if (difference.inDays < 2){
+        dayslogged = data['dayslogged'] + 1;
+      }
+    }
+
+
+    await getUserDocRef().set({'lastlogin':currenttime,'dayslogged':dayslogged});
+    return dayslogged;
+  }
+
+  static Future<int> getDaysLogged() async {
+    FirebaseFirestore db = FirebaseFirestore.instance;
+    if (!AuthService.isUserSignedIn()){
+      throw Exception('User is not signed in');
+    }
+    var doc = await getUserDocRef().get();
+    var data = doc.data();
+    if (data!.containsKey('dayslogged')) {
+      return data['dayslogged'];
+    }
+    return 0;
+  }
 }

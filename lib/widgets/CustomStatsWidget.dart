@@ -26,6 +26,7 @@ class CustomStats extends StatelessWidget {
             Icons.star,
             size: 35,
             color: Colors.lightGreen
+
         ),
 
         //Space between star and text
