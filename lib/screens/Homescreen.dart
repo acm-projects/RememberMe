@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter_speed_dial/flutter_speed_dial.dart';
+import 'package:rememberme/Screens/MemorySelect.dart';
 import 'package:rememberme/screens/CardView.dart';
+import 'package:rememberme/screens/Stats.dart';
 import 'package:rememberme/screens/deckview.dart';
 import 'package:rememberme/screens/modifycard.dart';
 import 'package:rememberme/services/cardservice.dart';
@@ -16,6 +18,7 @@ class Homepage extends StatefulWidget {
 }
 
 class _HomepageState extends State<Homepage> {
+  final Future<Deck> deckFuture = DeckService.getMasterDeck();
   Future<List<Deck>> _decksFuture = DeckService.getAllDecks();
   List<Deck> _decks = [];
 
@@ -58,23 +61,48 @@ class _HomepageState extends State<Homepage> {
       child: Column(
         children: <Widget>[
           //For achievement heading on the Homepage--------------------------
+
+
           Container(
             margin: EdgeInsets.fromLTRB(0, 30, 0, 10),
-            child: Text(
-              'Achievement:',
-              style: TextStyle(fontSize: 25, fontWeight: FontWeight.bold),
-            ),
-          ),
-          //For the actual achievement---------------------
-          Container(
-            margin: EdgeInsets.fromLTRB(0, 0, 0, 10),
-            child: Text(
-              'Added 10 cards!',
-              style: TextStyle(
-                fontSize: 25,
+            child: TextButton(
+              style: TextButton.styleFrom(
+                foregroundColor: Colors.black,
+                textStyle: TextStyle(fontSize: 25, fontWeight: FontWeight.bold),
               ),
+                onPressed: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => const Stats()),
+                  );
+                },
+                child: Text('Achievement:'),
             ),
           ),
+
+
+
+          //For the actual achievement---------------------
+          FutureBuilder(future: deckFuture, builder: (ctxt, snapshot)
+          {
+            if (snapshot.hasData) {
+              return
+                Container(
+                  margin: EdgeInsets.fromLTRB(0, 0, 0, 10),
+                  child: Text(
+                    '${snapshot.data!.cards.length} cards added!',
+                    style: TextStyle(
+                      fontSize: 25,
+                    ),
+                  ),
+                );
+
+            }
+            else {
+              return CircularProgressIndicator();
+            }
+          }),
+
 
           //THIS CONTAINER IS FOR THE "Decks" TEXT
           Container(
@@ -167,7 +195,10 @@ class _HomepageState extends State<Homepage> {
                 textStyle: TextStyle(fontSize: 25),
               ),
               onPressed: () {
-                print('Pressed');
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => const MemorySelect()),
+                );
               },
               child: Text('Memory Games'),
             ),
