@@ -76,6 +76,7 @@ class _DeckViewState extends State<DeckView> {
             );
           }).toList(),
         ),
+        child:
       ),
     );
   }
