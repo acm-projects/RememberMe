@@ -261,6 +261,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "4.0.1"
+  icon_decoration:
+    dependency: "direct main"
+    description:
+      name: icon_decoration
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "1.0.1"
   image_picker:
     dependency: "direct main"
     description:
