@@ -6,10 +6,90 @@ import 'package:rememberme/screens/CardView.dart';
 import 'package:rememberme/screens/Stats.dart';
 import 'package:rememberme/screens/deckview.dart';
 import 'package:rememberme/screens/modifycard.dart';
+import 'package:rememberme/screens/profile.dart';
 import 'package:rememberme/services/cardservice.dart';
 import 'package:rememberme/services/deckservice.dart';
 import 'package:rememberme/widgets/roundedpage.dart';
 import 'package:icon_decoration/icon_decoration.dart';
+
+class RoundedPage extends StatelessWidget {
+  const RoundedPage({
+    super.key,
+    this.title,
+    this.floatingActionButton,
+    this.onRefresh,
+    this.appBarActions,
+    this.roundedMargin = 20,
+    this.bodyMargin = 40,
+    required this.child,
+  });
+
+  final String? title;
+  final Widget child;
+  final Widget? floatingActionButton;
+  final Future<void> Function()? onRefresh;
+  final List<Widget>? appBarActions;
+  final double roundedMargin;
+  final double bodyMargin;
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        backgroundColor: Theme.of(context).primaryColor,
+        elevation: 0,
+        title: title != null ? Text(title!) : null,
+        actions: appBarActions,
+      ),
+      floatingActionButton: floatingActionButton,
+      body: Scaffold(
+        body: Center(
+          child: onRefresh == null
+              ? _getBody(context)
+              : _getBodyWithRefesh(context),
+        ),
+      ),
+    );
+  }
+
+  Widget _getBodyWithRefesh(context) {
+    assert(onRefresh != null);
+    return RefreshIndicator(
+      onRefresh: onRefresh!,
+      child: _getBody(context),
+    );
+  }
+
+  Widget _getBody(BuildContext context) {
+    return ListView(
+      children: [
+        Stack(
+          children: [
+            Container(
+              height: MediaQuery.of(context).size.height,
+              color: Theme.of(context).primaryColor,
+            ),
+            Container(
+              height: MediaQuery.of(context).size.height,
+              margin: EdgeInsets.only(top: roundedMargin),
+              decoration: const BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.only(
+                  topLeft: Radius.circular(50),
+                  topRight: Radius.circular(50),
+                ),
+              ),
+            ),
+            Container(
+              margin: EdgeInsets.only(top: bodyMargin),
+              child: child,
+            ),
+          ],
+        ),
+      ],
+    );
+  }
+}
 
 class Homepage extends StatefulWidget {
   const Homepage({Key? key}) : super(key: key);
@@ -47,6 +127,22 @@ class _HomepageState extends State<Homepage> {
         ],
       ),
       appBarActions: [
+        InkWell(
+          onTap: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => const Profile()),
+            );
+          },
+          child: SizedBox(
+            height: 50,
+            width: 50,
+            child: CircleAvatar(
+              // add image to assets folder or get image from firebase and put here
+              backgroundImage: AssetImage('assets/avatar.webp'),
+            ),
+          ),
+        ),
         IconButton(
           onPressed: () {
             // method to show the search bar
