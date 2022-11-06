@@ -19,14 +19,15 @@ class _ProfileState extends State<Profile> {
     return Scaffold(
       resizeToAvoidBottomInset: false,
         appBar: AppBar(
-          backgroundColor: const Color(0xFFFF8F54),
+          //backgroundColor: const Color(0xFFFF8F54),
+          backgroundColor: Theme.of(context).primaryColorDark,
           elevation: 0,
           centerTitle: true,
           title: const Text(
-              'Profile',
+              'My Profile',
               style: TextStyle(
                 color: Colors.white,
-                fontWeight: FontWeight.bold,
+                //fontWeight: FontWeight.bold,
                 fontSize: 30,
               ),
         ),
@@ -60,7 +61,7 @@ class _ProfileState extends State<Profile> {
 
                   child: Container(
                     decoration: const BoxDecoration(
-                      color: Color.fromRGBO(251,248,248, 0.9),
+                      color: Color.fromRGBO(251,250,250, 1),
                       borderRadius: BorderRadius.only(topLeft: Radius.circular(47.0), topRight: Radius.circular(47.0), bottomLeft: Radius.zero, bottomRight: Radius.zero),
                     ),
                     child: Column(
@@ -69,18 +70,18 @@ class _ProfileState extends State<Profile> {
                         const Padding(
                           padding: EdgeInsets.all(30),
                           child: SizedBox(
-                            height: 185,
-                            width: 185,
+                            height: 170,
+                            width: 170,
                             child: CircleAvatar(
                               // add image to assets folder or get image from firebase and put here
                               backgroundImage: AssetImage('assets/avatar.webp'),
                             ),
                           ),
                         ),
-                        Row(
+                        Column(
                           children: [
                             const Padding(
-                              padding: EdgeInsets.fromLTRB(50, 50, 0, 0),
+                              padding: EdgeInsets.fromLTRB(0, 10, 0, 0),
                               child: Text(
                                 'Name:',
                                 style: TextStyle(
@@ -92,23 +93,23 @@ class _ProfileState extends State<Profile> {
                               ),
                             ),
                             Padding(
-                              padding: EdgeInsets.fromLTRB(50, 50, 0, 0),
+                              padding: EdgeInsets.fromLTRB(0, 10, 0, 0),
                               child: Text(
                                 displayName(),
                                 style: TextStyle(
                                   color: Colors.black,
-                                  fontWeight: FontWeight.bold,
-                                  fontSize: 28,
+                                  //fontWeight: FontWeight.bold,
+                                  fontSize: 27,
                                 ),
                                 textAlign: TextAlign.center,
                               ),
                             ),
                           ],
                         ),
-                        Row(
+                        Column(
                           children: [
                             const Padding(
-                              padding: EdgeInsets.fromLTRB(50, 50, 0, 60),
+                              padding: EdgeInsets.fromLTRB(0, 40, 0, 0),
                               child: Text(
                                 'Email:',
                                 style: TextStyle(
@@ -120,13 +121,13 @@ class _ProfileState extends State<Profile> {
                               ),
                             ),
                             Padding(
-                              padding: EdgeInsets.fromLTRB(50, 50, 0, 60),
+                              padding: EdgeInsets.fromLTRB(0, 10, 0, 60),
                               child: Text(
                                 displayEmail(),
                                 style: const TextStyle(
                                   color: Colors.black,
-                                  fontWeight: FontWeight.bold,
-                                  fontSize: 28,
+                                  //fontWeight: FontWeight.bold,
+                                  fontSize: 27,
                                 ),
                                 textAlign: TextAlign.center,
                               ),
