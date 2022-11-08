@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:page_transition/page_transition.dart';
 import 'package:rememberme/screens/CardView.dart';
 import 'package:rememberme/services/cardservice.dart';
 import 'package:rememberme/services/deckservice.dart';
@@ -50,9 +51,12 @@ class _DeckViewState extends State<DeckView> {
                   horizontal: 12,
                   vertical: 6,
                 ),
-                leading: CardAvatar(
-                  card: card,
-                  radius: 24,
+                leading: Hero(
+                  tag: card.id,
+                  child: CardAvatar(
+                    card: card,
+                    radius: 24,
+                  ),
                 ),
                 trailing: IconButton(
                   icon: Icon(
@@ -63,8 +67,12 @@ class _DeckViewState extends State<DeckView> {
                 title: Text(card.name),
                 onTap: () async {
                   await Navigator.of(context).push(
-                    MaterialPageRoute(
-                      builder: (_) => CardView(initialCard: card),
+                    PageTransition(
+                      type: PageTransitionType.rightToLeft,
+                      childCurrent: widget,
+                      child: CardView(
+                        initialCard: card,
+                      ),
                     ),
                   );
                   var newDeck = await DeckService.getDeckById(_deck.id);

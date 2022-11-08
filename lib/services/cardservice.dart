@@ -1,13 +1,17 @@
 import 'dart:io';
 
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_storage/firebase_storage.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:rememberme/services/authservice.dart';
 import 'package:rememberme/services/deckservice.dart';
 
 import 'userservice.dart';
 
 class CardService {
+  static final Map<String, ImageProvider?> _imageCache = {};
+
   static Future<PersonCard> addCard({
     required name,
     required questions,
@@ -59,11 +63,32 @@ class CardService {
     var imgRef = storageRef.child(cardId);
     try {
       await imgRef.putFile(img);
+      _imageCache[cardId] = Image.file(img).image;
       return null;
     } on FirebaseException catch (e) {
       return e;
     }
   }
+
+  static Future<ImageProvider?> getImage(String id) async {
+    if (isImageCached(id)) getImageFromCache(id);
+
+    var ref = FirebaseStorage.instance.ref(
+      '${AuthService.getUser()!.uid}/cards/$id',
+    );
+    try {
+      var url = await ref.getDownloadURL();
+      var imageProvider = CachedNetworkImageProvider(url);
+      _imageCache[id] = imageProvider;
+      return imageProvider;
+    } on Exception catch (_) {
+      _imageCache[id] = null;
+      return null;
+    }
+  }
+
+  static bool isImageCached(String id) => _imageCache.containsKey(id);
+  static ImageProvider? getImageFromCache(String id) => _imageCache[id];
 
   static Future<void> deleteCard(String id) async {
     await UserService.getUserDocRef().collection('cards').doc(id).delete();
@@ -76,6 +101,7 @@ class CardService {
       await FirebaseStorage.instance
           .ref('${AuthService.getUser()!.uid}/cards/$id')
           .delete();
+      _imageCache.remove(id);
     } on FirebaseException catch (_) {} // Catch 404 error
   }
 }
@@ -86,6 +112,9 @@ class PersonCard {
     required this.name,
     required this.questions,
   });
+
+  final String id, name;
+  final Map<String, String> questions;
 
   factory PersonCard.fromDocument(
       DocumentSnapshot<Map<String, dynamic>> snapshot) {
@@ -102,18 +131,4 @@ class PersonCard {
     Map<String, dynamic> castedMap = buggedMap;
     return castedMap.map((key, value) => MapEntry(key, value as T));
   }
-
-  Future<String?> getImageURL() async {
-    var ref = FirebaseStorage.instance.ref(
-      '${AuthService.getUser()!.uid}/cards/$id',
-    );
-    try {
-      return await ref.getDownloadURL();
-    } on Exception catch (_) {
-      return null;
-    }
-  }
-
-  final String id, name;
-  final Map<String, String> questions;
 }

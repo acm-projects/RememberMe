@@ -7,6 +7,7 @@ import 'package:multi_select_flutter/multi_select_flutter.dart';
 import 'package:rememberme/services/cardservice.dart';
 import 'package:rememberme/services/deckservice.dart';
 import 'package:rememberme/widgets/cardavatar.dart';
+import 'package:rememberme/widgets/catchpop.dart';
 import 'package:rememberme/widgets/roundedpage.dart';
 
 class ModifyCard extends StatefulWidget {
@@ -24,7 +25,7 @@ class _ModifyCardState extends State<ModifyCard> {
   String? _name;
   Map<String, String> _questions = {};
   final List<_QuestionWidget> _questionWidgets = [];
-  String? _cardImage;
+  File? _cardImage;
 
   List<String> _selectedDecks = [];
   Future<Map<String, String>>? _decksFuture;
@@ -54,8 +55,8 @@ class _ModifyCardState extends State<ModifyCard> {
         child: const Icon(Icons.save),
       ),
       title: _name ?? 'New Card',
-      child: WillPopScope(
-        onWillPop: _showExitWithoutSaveDialog,
+      child: CatchPop(
+        withConfirmExit: true,
         child: Form(
           key: _formKey,
           child: Padding(
@@ -74,7 +75,9 @@ class _ModifyCardState extends State<ModifyCard> {
                           splashRadius: 12,
                           icon: CardAvatar(
                             card: widget.existingCard,
-                            localImage: _cardImage,
+                            providerOverride: _cardImage != null
+                                ? Image.file(_cardImage!).image
+                                : null,
                           ),
                           onPressed: () => _showImagePickerDialog(),
                         ),
@@ -159,26 +162,6 @@ class _ModifyCardState extends State<ModifyCard> {
     );
   }
 
-  Future<bool> _showExitWithoutSaveDialog() async {
-    var res = await showDialog<bool>(
-      context: context,
-      builder: (c) => AlertDialog(
-        content: const Text('Do you want to exit without saving?'),
-        actions: [
-          TextButton(
-            child: const Text('No'),
-            onPressed: () => Navigator.pop(c, false),
-          ),
-          TextButton(
-            child: const Text('Yes'),
-            onPressed: () => Navigator.pop(c, true),
-          ),
-        ],
-      ),
-    );
-    return res ?? false;
-  }
-
   void _showDeckDialog() {
     // Dont make a request for decks until theyre needed. This will
     // also cache the result
@@ -240,12 +223,12 @@ class _ModifyCardState extends State<ModifyCard> {
     );
     if (image != null) {
       setState(() {
-        _cardImage = image.path;
+        _cardImage = File(image.path);
       });
     }
   }
 
-  void _saveCard() async {
+  Future<void> _saveCard() async {
     if (!_formKey.currentState!.validate()) return;
     _questions = {}; // Clear old values
     _formKey.currentState!.save();
@@ -266,7 +249,7 @@ class _ModifyCardState extends State<ModifyCard> {
       }
       // Update image if needed
       if (_cardImage != null) {
-        var err = await CardService.updateCardImage(card.id, File(_cardImage!));
+        var err = await CardService.updateCardImage(card.id, _cardImage!);
         if (err != null) {
           // Recreate the error because firebase is stupid
           throw err;

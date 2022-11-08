@@ -1,95 +1,17 @@
 import 'package:flutter/material.dart';
-import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter_speed_dial/flutter_speed_dial.dart';
 import 'package:rememberme/Screens/MemorySelect.dart';
 import 'package:rememberme/screens/CardView.dart';
 import 'package:rememberme/screens/Stats.dart';
-import 'package:rememberme/screens/deckview.dart';
 import 'package:rememberme/screens/modifycard.dart';
 import 'package:rememberme/screens/profile.dart';
+import 'package:rememberme/screens/modifydeck.dart';
+import 'package:rememberme/services/authservice.dart';
 import 'package:rememberme/services/cardservice.dart';
 import 'package:rememberme/services/deckservice.dart';
+import 'package:rememberme/widgets/deckcarousel.dart';
 import 'package:rememberme/widgets/roundedpage.dart';
 import 'package:icon_decoration/icon_decoration.dart';
-
-class RoundedPage extends StatelessWidget {
-  const RoundedPage({
-    super.key,
-    this.title,
-    this.floatingActionButton,
-    this.onRefresh,
-    this.appBarActions,
-    this.roundedMargin = 20,
-    this.bodyMargin = 40,
-    required this.child,
-  });
-
-  final String? title;
-  final Widget child;
-  final Widget? floatingActionButton;
-  final Future<void> Function()? onRefresh;
-  final List<Widget>? appBarActions;
-  final double roundedMargin;
-  final double bodyMargin;
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        backgroundColor: Theme.of(context).primaryColor,
-        elevation: 0,
-        title: title != null ? Text(title!) : null,
-        actions: appBarActions,
-      ),
-      floatingActionButton: floatingActionButton,
-      body: Scaffold(
-        body: Center(
-          child: onRefresh == null
-              ? _getBody(context)
-              : _getBodyWithRefesh(context),
-        ),
-      ),
-    );
-  }
-
-  Widget _getBodyWithRefesh(context) {
-    assert(onRefresh != null);
-    return RefreshIndicator(
-      onRefresh: onRefresh!,
-      child: _getBody(context),
-    );
-  }
-
-  Widget _getBody(BuildContext context) {
-    return ListView(
-      children: [
-        Stack(
-          children: [
-            Container(
-              height: MediaQuery.of(context).size.height,
-              color: Theme.of(context).primaryColor,
-            ),
-            Container(
-              height: MediaQuery.of(context).size.height,
-              margin: EdgeInsets.only(top: roundedMargin),
-              decoration: const BoxDecoration(
-                color: Colors.white,
-                borderRadius: BorderRadius.only(
-                  topLeft: Radius.circular(50),
-                  topRight: Radius.circular(50),
-                ),
-              ),
-            ),
-            Container(
-              margin: EdgeInsets.only(top: bodyMargin),
-              child: child,
-            ),
-          ],
-        ),
-      ],
-    );
-  }
-}
 
 class Homepage extends StatefulWidget {
   const Homepage({Key? key}) : super(key: key);
@@ -99,16 +21,23 @@ class Homepage extends StatefulWidget {
 }
 
 class _HomepageState extends State<Homepage> {
-  final Future<Deck> deckFuture = DeckService.getMasterDeck();
-  Future<List<Deck>> _decksFuture = DeckService.getAllDecks();
-  List<Deck> _decks = [];
+  List<PersonCard> _masterCardList = [];
+
+  @override
+  void initState() {
+    super.initState();
+    DeckService.getMasterDeck().then((value) {
+      setState(() {
+        _masterCardList = value.cards;
+      });
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
-    return
-      RoundedPage(
-        title: 'Welcome',
-        floatingActionButton: SpeedDial(
+    return RoundedPage(
+      title: 'Welcome ${AuthService.getUser()?.displayName ?? 'Back'}!',
+      floatingActionButton: SpeedDial(
         icon: Icons.add,
         activeIcon: Icons.close,
         spaceBetweenChildren: 10,
@@ -123,6 +52,9 @@ class _HomepageState extends State<Homepage> {
           SpeedDialChild(
             label: 'New Deck',
             child: const Icon(Icons.collections_bookmark),
+            onTap: () => Navigator.of(context).push(
+              MaterialPageRoute(builder: (_) => const ModifyDeck()),
+            ),
           ),
         ],
       ),
@@ -150,7 +82,7 @@ class _HomepageState extends State<Homepage> {
                 context: context,
                 // delegate to customize the search bar
                 delegate: _CustomSearchDelegate(
-                  cards: _decks.firstWhere((elem) => elem.isMaster).cards,
+                  cards: _masterCardList,
                 ));
           },
           icon: const Icon(Icons.search),
@@ -158,32 +90,26 @@ class _HomepageState extends State<Homepage> {
       ],
       child: Column(
         children: <Widget>[
-
           Row(
-              children: <Widget>[
-                Container(
-                    margin: EdgeInsets.fromLTRB(40, 90, 0, 0)
-                ),
-
-                Stack(
-                  alignment: AlignmentDirectional.center,
-                  children: <Widget>[
-
-
-                    Icon(
-                      Icons.circle,
-                      size: 70,
-                      color: Color.fromARGB(90,60,200,10),
-                    ),
-
-                    DecoratedIcon(
-                      icon: Icon(
-                          Icons.star,
-                          size: 30,
-                          color: Colors.yellow
-                      ),
+            children: <Widget>[
+              Container(margin: EdgeInsets.fromLTRB(40, 90, 0, 0)),
+              Stack(
+                alignment: AlignmentDirectional.center,
+                children: <Widget>[
+                  Icon(
+                    Icons.circle,
+                    size: 70,
+                    color: Color.fromARGB(90, 60, 200, 10),
+                  ),
+                  DecoratedIcon(
+                      icon: Icon(Icons.star, size: 30, color: Colors.yellow),
                       decoration: IconDecoration(
-                      shadows: [Shadow(blurRadius: 30, offset: Offset(1, 0), color: Colors.brown)],
+                          shadows: [
+                            Shadow(
+                                blurRadius: 30,
+                                offset: Offset(1, 0),
+                                color: Colors.brown)
+                          ],
                           gradient: LinearGradient(
                             begin: Alignment.topCenter,
                             end: Alignment.bottomCenter,
@@ -192,64 +118,44 @@ class _HomepageState extends State<Homepage> {
                               Color(0xfffae16c),
                               Color.fromARGB(128, 250, 148, 75),
                             ],
-                          )
-                      )
-                    ),
-
-                  ],
-                ),
-
-                Container(
-                    margin: EdgeInsets.fromLTRB(20, 90, 10, 0)
-                ),
-
-                Column(
-                    children: <Widget>[
-                      Container(
-                        margin: EdgeInsets.fromLTRB(0, 30, 0, 5),
-                        child: TextButton(
-                          style: TextButton.styleFrom(
-                            foregroundColor: Colors.black,
-                            textStyle: TextStyle(fontSize: 25, fontWeight: FontWeight.bold),
-                          ),
-                          onPressed: () {
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(builder: (context) => const Stats()),
-                            );
-                          },
-                          child: Text('Achievement'),
-                        ),
+                          ))),
+                ],
+              ),
+              Container(margin: EdgeInsets.fromLTRB(20, 90, 10, 0)),
+              Column(
+                children: <Widget>[
+                  Container(
+                    margin: EdgeInsets.fromLTRB(0, 30, 0, 5),
+                    child: TextButton(
+                      style: TextButton.styleFrom(
+                        foregroundColor: Colors.black,
+                        textStyle: TextStyle(
+                            fontSize: 25, fontWeight: FontWeight.bold),
                       ),
+                      onPressed: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => const Stats()),
+                        );
+                      },
+                      child: Text('Achievement'),
+                    ),
+                  ),
 
-
-
-                      //For the actual achievement---------------------
-                      FutureBuilder(future: deckFuture, builder: (ctxt, snapshot)
-                      {
-                        if (snapshot.hasData) {
-                          return
-                            Container(
-                              margin: EdgeInsets.fromLTRB(0, 0, 0, 10),
-                              child: Text(
-                                '${snapshot.data!.cards.length} cards added',
-                                style: TextStyle(
-                                  fontSize: 25,
-                                ),
-                              ),
-                            );
-
-                        }
-                        else {
-                          return CircularProgressIndicator();
-                        }
-                      }),
-                    ]
-                ),
-
-                Container(
-                    margin: EdgeInsets.fromLTRB(20, 90, 10, 0)
-                ),
+                  //For the actual achievement---------------------
+                  Container(
+                    margin: EdgeInsets.fromLTRB(0, 0, 0, 10),
+                    child: Text(
+                      '${_masterCardList.length} cards added',
+                      style: TextStyle(
+                        fontSize: 25,
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+              Container(margin: EdgeInsets.fromLTRB(20, 90, 10, 0)),
             ],
           ),
 
@@ -260,81 +166,13 @@ class _HomepageState extends State<Homepage> {
           //   child: Image.asset('assets/logo.png')
           // ),
 
-
-
-          //THIS CONTAINER IS FOR THE "Decks" TEXT
+          // SPACER
           Container(
-            margin: const EdgeInsets.fromLTRB(0, 40, 0, 10),
-            child: const Text(
-              'Decks',
-              style: TextStyle(fontSize: 25, fontWeight: FontWeight.bold),
-            ),
+            margin: const EdgeInsets.only(bottom: 10),
           ),
 
           //THIS IS TO SET UP THE CAROUSEL
-          FutureBuilder<List<Deck>>(
-            future: _decksFuture,
-            builder: (context, snapshot) {
-              List<Widget> items = [];
-
-              if (snapshot.hasData || snapshot.hasError) {
-                if (snapshot.data != null) {
-                  _decks = snapshot.data!;
-                  items = _decks.map((deck) {
-                    return Card(
-                      color: Theme.of(context).primaryColorLight,
-                      child: InkWell(
-                        onTap: () async {
-                          await Navigator.of(context).push(
-                            MaterialPageRoute(
-                              builder: (_) => DeckView(
-                                initialDeck: deck,
-                              ),
-                            ),
-                          );
-                          setState(() {
-                            _decksFuture = DeckService.getAllDecks();
-                          });
-                        },
-                        child: Center(
-                            child: Text(
-                              deck.name,
-                              style: const TextStyle(fontSize: 22),
-                            )),
-                      ),
-                    );
-                  }).toList();
-                } else {
-                  items = [
-                    const Card(
-                      child: Center(
-                        child: Text('There was an error loading decks.'),
-                      ),
-                    ),
-                  ];
-                }
-              } else {
-                items = [
-                  const Center(
-                    child: CircularProgressIndicator(),
-                  ),
-                ];
-              }
-
-              return CarouselSlider(
-                options: CarouselOptions(
-                  height: 160.0,
-                  autoPlay: true,
-                  autoPlayInterval: const Duration(seconds: 3),
-                  autoPlayAnimationDuration: const Duration(milliseconds: 800),
-                  autoPlayCurve: Curves.fastOutSlowIn,
-                  pauseAutoPlayOnTouch: true,
-                  aspectRatio: 2.0,
-                ),
-                items: items,
-              );
-            },
-          ),
+          const DeckCarousel(),
 
           //THIS IS FOR A TEXT BUTTON TO SELECT 'Memory Games'
           //CHANGE ON-PRESSED ACTION TO GO TO ANOTHER SCREEN
@@ -343,7 +181,7 @@ class _HomepageState extends State<Homepage> {
             child: TextButton(
               style: TextButton.styleFrom(
                 foregroundColor: Colors.white,
-                backgroundColor: Color.fromARGB(170,60,200,10),
+                backgroundColor: Theme.of(context).primaryColor,
                 padding: const EdgeInsets.symmetric(
                   horizontal: 80,
                   vertical: 30,
@@ -352,14 +190,13 @@ class _HomepageState extends State<Homepage> {
                     borderRadius: BorderRadius.all(Radius.circular(5))),
                 textStyle: TextStyle(fontSize: 25),
               ),
-
               onPressed: () {
                 Navigator.push(
                   context,
                   MaterialPageRoute(builder: (context) => const MemorySelect()),
                 );
               },
-              child: Text('Memory Games'),
+              child: Text(' Memory Game '),
             ),
           ),
 
@@ -368,7 +205,7 @@ class _HomepageState extends State<Homepage> {
             child: TextButton(
               style: TextButton.styleFrom(
                 foregroundColor: Colors.white,
-                backgroundColor: Color.fromARGB(170,60,200,10),
+                backgroundColor: Theme.of(context).primaryColor,
                 padding: const EdgeInsets.symmetric(
                   horizontal: 80,
                   vertical: 30,

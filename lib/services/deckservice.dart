@@ -95,6 +95,24 @@ class DeckService {
     await batch.commit();
   }
 
+  static Future<Deck> modifyDeck(
+    String id,
+    String name,
+    List<String> cards,
+  ) async {
+    var deckRef = getDecksRef().doc(id);
+    await deckRef.set({
+      'name': name,
+      'cards': cards,
+    });
+    var personCards = await CardService.getByIds(cards);
+    return Deck(
+      id: id,
+      name: name,
+      cards: personCards,
+    );
+  }
+
   static Future<Deck> getDeckFromDoc(DeckDoc doc) async {
     List<dynamic> cards = doc['cards'];
     List<String> mappedCards = cards.map((elem) => elem.toString()).toList();
