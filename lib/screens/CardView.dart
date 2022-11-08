@@ -63,16 +63,12 @@ class _CardViewState extends State<CardView> {
                 children: [
                   Container(
                     margin: const EdgeInsets.only(right: 16),
-                    decoration: BoxDecoration(
-                      border: Border.all(
-                        color: Colors.black12,
-                        width: 4,
+                    child: Hero(
+                      tag: _card.id,
+                      child: CardAvatar(
+                        card: _card,
+                        radius: 64,
                       ),
-                      borderRadius: const BorderRadius.all(Radius.circular(90)),
-                    ),
-                    child: CardAvatar(
-                      card: _card,
-                      radius: 64,
                     ),
                   ),
                   Flexible(

@@ -1,45 +1,56 @@
-import 'dart:io';
-
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
-import 'package:rememberme/services/authservice.dart';
 import 'package:rememberme/services/cardservice.dart';
 
-class CardAvatar extends StatelessWidget {
-  final PersonCard? card;
-  final String? localImage;
-  final double? radius;
+class CardAvatar extends StatefulWidget {
+  const CardAvatar({super.key, this.card, this.radius, this.providerOverride});
 
-  const CardAvatar({super.key, this.card, this.localImage, this.radius});
+  final PersonCard? card;
+  final double? radius;
+  final ImageProvider? providerOverride;
+
+  @override
+  State<CardAvatar> createState() => _CardAvatarState();
+}
+
+class _CardAvatarState extends State<CardAvatar> {
+  bool _imageHasBeenRequested = true;
+  final _defaultImageProvider = Image.asset('assets/avatar.webp').image;
+
+  @override
+  void initState() {
+    super.initState();
+    _updateImage();
+  }
 
   @override
   Widget build(BuildContext context) {
-    if (localImage != null) {
-      return _getAvatar(Image.file(File(localImage!)).image);
-    } else {
-      final defaultImageProvider = Image.asset('assets/avatar.webp').image;
-      if (card != null && AuthService.isUserSignedIn()) {
-        return FutureBuilder(
-          future: card!.getImageURL(),
-          builder: (context, snapshot) {
-            if (snapshot.data != null) {
-              return _getAvatar(CachedNetworkImageProvider(snapshot.data!));
-            } else {
-              return _getAvatar(defaultImageProvider);
-            }
-          },
-        );
-      } else {
-        return _getAvatar(defaultImageProvider);
+    ImageProvider? provider;
+    if (widget.providerOverride != null) {
+      provider = widget.providerOverride;
+    } else if (widget.card != null) {
+      if (CardService.isImageCached(widget.card!.id)) {
+        provider = CardService.getImageFromCache(widget.card!.id);
+      } else if (!_imageHasBeenRequested) {
+        _updateImage();
+        _imageHasBeenRequested = true;
       }
     }
+
+    return CircleAvatar(
+      radius: widget.radius,
+      backgroundImage: provider ?? _defaultImageProvider,
+    );
   }
 
-  Widget _getAvatar(ImageProvider provider) {
-    return CircleAvatar(
-      maxRadius: radius,
-      minRadius: radius,
-      backgroundImage: provider,
-    );
+  _updateImage() {
+    if (widget.card != null) {
+      CardService.getImage(widget.card!.id).then((_) {
+        if (mounted) {
+          setState(() {
+            _imageHasBeenRequested = false;
+          });
+        }
+      });
+    }
   }
 }
