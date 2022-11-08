@@ -1,4 +1,9 @@
+import 'dart:io';
+
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_storage/firebase_storage.dart';
+import 'package:flutter/material.dart';
 import 'package:rememberme/services/authservice.dart';
 
 class UserService {
@@ -17,7 +22,7 @@ class UserService {
 
   static Future<int> updateUserLoginDate() async {
     FirebaseFirestore db = FirebaseFirestore.instance;
-    if (!AuthService.isUserSignedIn()){
+    if (!AuthService.isUserSignedIn()) {
       return 0;
     }
     var doc = await getUserDocRef().get();
@@ -31,19 +36,19 @@ class UserService {
       if (difference.inDays < 1) {
         dayslogged = data['dayslogged'];
         currenttime = date.toDate();
-      } else if (difference.inDays < 2){
+      } else if (difference.inDays < 2) {
         dayslogged = data['dayslogged'] + 1;
       }
     }
 
-
-    await getUserDocRef().set({'lastlogin':currenttime,'dayslogged':dayslogged});
+    await getUserDocRef()
+        .set({'lastlogin': currenttime, 'dayslogged': dayslogged});
     return dayslogged;
   }
 
   static Future<int> getDaysLogged() async {
     FirebaseFirestore db = FirebaseFirestore.instance;
-    if (!AuthService.isUserSignedIn()){
+    if (!AuthService.isUserSignedIn()) {
       throw Exception('User is not signed in');
     }
     var doc = await getUserDocRef().get();
@@ -52,5 +57,27 @@ class UserService {
       return data['dayslogged'];
     }
     return 0;
+  }
+
+  static Future<FirebaseException?> updateUserAvatar(File img) async {
+    var storageRef = FirebaseStorage.instance.ref(AuthService.getUser()!.uid);
+    var imgRef = storageRef.child('avatar');
+    try {
+      await imgRef.putFile(img);
+      return null;
+    } on FirebaseException catch (e) {
+      return e;
+    }
+  }
+
+  static Future<ImageProvider?> getUserAvatar() async {
+    var storageRef = FirebaseStorage.instance.ref(AuthService.getUser()!.uid);
+    var imgRef = storageRef.child('avatar');
+    try {
+      var url = await imgRef.getDownloadURL();
+      return CachedNetworkImageProvider(url);
+    } on Exception catch (_) {
+      return null;
+    }
   }
 }
