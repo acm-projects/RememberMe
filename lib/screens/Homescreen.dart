@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_speed_dial/flutter_speed_dial.dart';
 import 'package:rememberme/Screens/MemorySelect.dart';
 import 'package:rememberme/screens/CardView.dart';
+import 'package:rememberme/screens/MemoryGame.dart';
 import 'package:rememberme/screens/Stats.dart';
 import 'package:rememberme/screens/modifycard.dart';
 import 'package:rememberme/screens/profile.dart';
@@ -12,6 +13,7 @@ import 'package:rememberme/services/deckservice.dart';
 import 'package:rememberme/widgets/deckcarousel.dart';
 import 'package:rememberme/widgets/roundedpage.dart';
 import 'package:icon_decoration/icon_decoration.dart';
+import 'package:rememberme/widgets/useravatar.dart';
 
 class Homepage extends StatefulWidget {
   const Homepage({Key? key}) : super(key: key);
@@ -59,22 +61,6 @@ class _HomepageState extends State<Homepage> {
         ],
       ),
       appBarActions: [
-        InkWell(
-          onTap: () {
-            Navigator.push(
-              context,
-              MaterialPageRoute(builder: (context) => const Profile()),
-            );
-          },
-          child: SizedBox(
-            height: 50,
-            width: 50,
-            child: CircleAvatar(
-              // add image to assets folder or get image from firebase and put here
-              backgroundImage: AssetImage('assets/avatar.webp'),
-            ),
-          ),
-        ),
         IconButton(
           onPressed: () {
             // method to show the search bar
@@ -88,6 +74,18 @@ class _HomepageState extends State<Homepage> {
           icon: const Icon(Icons.search),
         )
       ],
+      leading: InkWell(
+        onTap: () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (context) => const Profile()),
+          );
+        },
+        child: Container(
+          margin: const EdgeInsets.all(8),
+          child: const UserAvatar(),
+        ),
+      ),
       child: Column(
         children: <Widget>[
           Row(
@@ -193,7 +191,7 @@ class _HomepageState extends State<Homepage> {
               onPressed: () {
                 Navigator.push(
                   context,
-                  MaterialPageRoute(builder: (context) => const MemorySelect()),
+                  MaterialPageRoute(builder: (context) => MemoryGame()),
                 );
               },
               child: Text(' Memory Game '),

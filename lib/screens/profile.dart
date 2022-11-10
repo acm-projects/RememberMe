@@ -1,8 +1,13 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:rememberme/screens/login-signup.dart';
 import 'package:rememberme/services/authservice.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:rememberme/services/userservice.dart';
 import 'package:rememberme/widgets/roundedpage.dart';
+import 'package:rememberme/widgets/useravatar.dart';
 
 class Profile extends StatefulWidget {
   const Profile({super.key});
@@ -37,14 +42,25 @@ class _ProfileState extends State<Profile> {
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.start,
                 children: <Widget>[
-                  const Padding(
-                    padding: EdgeInsets.all(30),
-                    child: SizedBox(
-                      height: 170,
-                      width: 170,
-                      child: CircleAvatar(
-                        // add image to assets folder or get image from firebase and put here
-                        backgroundImage: AssetImage('assets/avatar.webp'),
+                  InkWell(
+                    onTap: () async {
+                      var picker = ImagePicker();
+                      var image = await picker.pickImage(
+                        source: ImageSource.gallery,
+                        maxHeight: 512,
+                        maxWidth: 512,
+                      );
+                      if (image != null) {
+                        await UserService.updateUserAvatar(File(image.path));
+                        setState(() {});
+                      }
+                    },
+                    child: const Padding(
+                      padding: EdgeInsets.all(30),
+                      child: SizedBox(
+                        height: 170,
+                        width: 170,
+                        child: UserAvatar(),
                       ),
                     ),
                   ),
