@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:rememberme/screens/Stats.dart';
 import 'package:rememberme/screens/homescreen.dart';
 import 'package:rememberme/screens/login-signup.dart';
+import 'package:rememberme/screens/profile.dart';
 import 'package:rememberme/services/authservice.dart';
 import 'firebase_options.dart';
 import 'package:rememberme/screens/modifycard.dart';
@@ -25,6 +27,7 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: 'Flutter Demo',
       theme: ThemeData(
+        fontFamily: 'BreeSerif',
         primaryColor: primaryColor,
         primaryColorLight: const Color.fromARGB(255, 255, 199, 172),
         primaryColorDark: Colors.deepOrange[300],
