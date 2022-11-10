@@ -42,18 +42,21 @@ class _HomepageState extends State<Homepage> {
       floatingActionButton: SpeedDial(
         icon: Icons.add,
         activeIcon: Icons.close,
+        childrenButtonSize: Size(70, 70),
         spaceBetweenChildren: 10,
         children: [
           SpeedDialChild(
             label: 'New Card',
-            child: const Icon(Icons.note_add),
+            labelStyle: TextStyle(fontSize: 22),
+            child: const Icon(Icons.note_add, size: 30, color: Color.fromRGBO(239, 119, 55, 1.0)),
             onTap: () => Navigator.of(context).push(
               MaterialPageRoute(builder: (_) => const ModifyCard()),
             ),
           ),
           SpeedDialChild(
             label: 'New Deck',
-            child: const Icon(Icons.collections_bookmark),
+            labelStyle: TextStyle(fontSize: 22),
+            child: const Icon(Icons.collections_bookmark, size: 30, color: Color.fromRGBO(239, 119, 55, 1.0)),
             onTap: () => Navigator.of(context).push(
               MaterialPageRoute(builder: (_) => const ModifyDeck()),
             ),
@@ -194,7 +197,7 @@ class _HomepageState extends State<Homepage> {
                   MaterialPageRoute(builder: (context) => MemoryGame()),
                 );
               },
-              child: Text(' Memory Game '),
+              child: Text(' Memory Game ', style: TextStyle(fontFamily: 'BreeSerif')),
             ),
           ),
 
@@ -218,7 +221,7 @@ class _HomepageState extends State<Homepage> {
                   MaterialPageRoute(builder: (context) => const Stats()),
                 );
               },
-              child: Text(' View Statistics '),
+              child: Text(' View Statistics ', style: TextStyle(fontFamily: 'BreeSerif')),
             ),
           ),
         ],
