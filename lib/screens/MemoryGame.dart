@@ -86,6 +86,10 @@ class _MemoryGameState extends State<MemoryGame> {
   Widget buildNumber(_TileData data) => Container(
     padding: EdgeInsets.all(16.0),
     color: Color.fromRGBO(92, 193, 175, 100),
+    decoration: BoxDecoration(
+      borderRadius: BorderRadius.circular(20),
+
+    ),
 
     child: GridTile(
       header: Text(
