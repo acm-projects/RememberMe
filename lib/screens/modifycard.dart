@@ -84,6 +84,7 @@ class _ModifyCardState extends State<ModifyCard> {
                         Expanded(
                           child: TextFormField(
                             decoration: const InputDecoration(hintText: 'Name'),
+                            style: TextStyle(fontSize: 20),
                             validator: (value) {
                               if (value == null || value.isEmpty) {
                                 return 'Please enter a name';
@@ -115,6 +116,7 @@ class _ModifyCardState extends State<ModifyCard> {
                       label: Text(
                         ' Add to Deck(s)',
                         style: TextStyle(
+                          fontSize: 20,
                           color: Theme.of(context).hintColor,
                         ),
                       ),
@@ -301,6 +303,7 @@ class _QuestionWidget extends FormField<MapEntry<String?, String?>> {
                       children: <Widget>[
                         TextFormField(
                           decoration: const InputDecoration(hintText: 'Prompt'),
+                          style: TextStyle(fontSize: 21),
                           initialValue: initialQuestion,
                           onChanged: (value) {
                             state.didChange(
@@ -316,6 +319,7 @@ class _QuestionWidget extends FormField<MapEntry<String?, String?>> {
                         ),
                         TextFormField(
                           decoration: const InputDecoration(hintText: 'Answer'),
+                          style: TextStyle(fontSize: 21),
                           initialValue: initialAnswer,
                           onChanged: (value) {
                             state.didChange(
