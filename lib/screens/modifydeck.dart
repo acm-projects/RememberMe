@@ -78,6 +78,7 @@ class _ModifyDeckState extends State<ModifyDeck> {
                 padding: const EdgeInsets.all(12),
                 child: TextFormField(
                   decoration: const InputDecoration(hintText: 'Deck Name'),
+                  style: TextStyle(fontSize: 20),
                   validator: (value) {
                     if (value == null || value.isEmpty) {
                       return 'Please enter a name';
