@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_speed_dial/flutter_speed_dial.dart';
+import 'package:multi_select_flutter/dialog/mult_select_dialog.dart';
+import 'package:multi_select_flutter/util/multi_select_item.dart';
 import 'package:rememberme/Screens/MemorySelect.dart';
 import 'package:rememberme/screens/CardView.dart';
 import 'package:rememberme/screens/MemoryGame.dart';
@@ -11,6 +13,7 @@ import 'package:rememberme/services/authservice.dart';
 import 'package:rememberme/services/cardservice.dart';
 import 'package:rememberme/services/deckservice.dart';
 import 'package:rememberme/widgets/deckcarousel.dart';
+import 'package:rememberme/widgets/memorygameselectdialog.dart';
 import 'package:rememberme/widgets/roundedpage.dart';
 import 'package:icon_decoration/icon_decoration.dart';
 import 'package:rememberme/widgets/useravatar.dart';
@@ -191,12 +194,7 @@ class _HomepageState extends State<Homepage> {
                     borderRadius: BorderRadius.all(Radius.circular(5))),
                 textStyle: TextStyle(fontSize: 25),
               ),
-              onPressed: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => MemoryGame()),
-                );
-              },
+              onPressed: () => MemoryGameSelectDialog.showSelectDialog(context),
               child: Text(' Memory Game ', style: TextStyle(fontFamily: 'BreeSerif')),
             ),
           ),
@@ -287,7 +285,7 @@ class _CustomSearchDelegate extends SearchDelegate {
         var result = matchQuery[index];
         return ListTile(
           title: Text(result.name),
-          onTap: () => Navigator.of(context).push(
+          onTap: () => Navigator.of(context).pushReplacement(
             MaterialPageRoute(
               builder: (context) => CardView(initialCard: result),
             ),

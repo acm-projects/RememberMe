@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_speed_dial/flutter_speed_dial.dart';
 import 'package:rememberme/screens/modifycard.dart';
 import 'package:rememberme/services/cardservice.dart';
 import 'package:rememberme/widgets/cardavatar.dart';
@@ -30,22 +31,41 @@ class _CardViewState extends State<CardView> {
       child: RoundedPage(
         bodyMargin: 0,
         roundedMargin: 200,
-        floatingActionButton: FloatingActionButton(
-          onPressed: () async {
-            PersonCard? res = await Navigator.of(context).push(
-              MaterialPageRoute(
-                builder: (_) => ModifyCard(
-                  existingCard: _card,
-                ),
+        floatingActionButton: Hero(
+          tag: 'deckCardViewFloatingButton',
+          child: SpeedDial(
+            spaceBetweenChildren: 10,
+            children: [
+              SpeedDialChild(
+                label: 'Edit Card',
+                child: const Icon(Icons.edit),
+                onTap: () async {
+                  PersonCard? res = await Navigator.of(context).push(
+                    MaterialPageRoute(
+                      builder: (_) => ModifyCard(
+                        existingCard: _card,
+                      ),
+                    ),
+                  );
+                  if (res != null) {
+                    setState(() {
+                      _card = res;
+                    });
+                  }
+                },
               ),
-            );
-            if (res != null) {
-              setState(() {
-                _card = res;
-              });
-            }
-          },
-          child: const Icon(Icons.edit),
+              SpeedDialChild(
+                label: 'Delete Card',
+                child: const Icon(Icons.delete),
+                onTap: () async {
+                  await CardService.deleteCard(_card.id);
+                  if (mounted) Navigator.of(context).pop();
+                },
+              ),
+            ],
+            activeChild: const Icon(Icons.close),
+            child: const Icon(Icons.settings),
+          ),
         ),
         onRefresh: () async {
           var newCard = await CardService.getById(_card.id);

@@ -154,16 +154,16 @@ class _CarouselItem extends StatelessWidget {
 
     return Align(
       alignment: FractionalOffset(
-        0.5 + (normIndex - 0.5) * 0.8 * (1 - percent.abs()),
-        0.5 + (normIndex - 0.5) * 0.25,
+        0.5 + (normIndex - 0.5) * 0.9 * (1 - percent.abs()),
+        normIndex,
       ),
       child: Card(
         margin: EdgeInsets.all(zoomMargin),
         color: color,
         elevation: cardElevation,
         child: FractionallySizedBox(
-          widthFactor: 2 / cardCount,
-          heightFactor: 0.7,
+          widthFactor: 0.6,
+          heightFactor: 0.9,
           child: body,
         ),
       ),

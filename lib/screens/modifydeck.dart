@@ -28,6 +28,7 @@ class _ModifyDeckState extends State<ModifyDeck> {
   void initState() {
     if (widget.existingDeck != null) {
       _selectedCards = widget.existingDeck!.cards.map((e) => e.id).toList();
+      _name = widget.existingDeck!.name;
     }
     super.initState();
   }

@@ -47,7 +47,7 @@ class DeckService {
       }
     }
     decks.add(masterDeck);
-    decks.sort(((a, b) => a.cards.length.compareTo(b.cards.length)));
+    decks.sort(((a, b) => b.cards.length.compareTo(a.cards.length)));
     return decks;
   }
 
@@ -128,6 +128,11 @@ class DeckService {
     var deckRef = getDecksRef().doc(id);
     var deckDoc = await deckRef.get();
     return await getDeckFromDoc(deckDoc);
+  }
+
+  static Future<void> deleteDeck(String id) async {
+    if (id == 'master') return;
+    await getDecksRef().doc(id).delete();
   }
 }
 

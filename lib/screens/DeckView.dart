@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_speed_dial/flutter_speed_dial.dart';
 import 'package:page_transition/page_transition.dart';
 import 'package:rememberme/screens/CardView.dart';
+import 'package:rememberme/screens/modifydeck.dart';
 import 'package:rememberme/services/cardservice.dart';
 import 'package:rememberme/services/deckservice.dart';
 import 'package:rememberme/widgets/cardavatar.dart';
@@ -37,6 +39,42 @@ class _DeckViewState extends State<DeckView> {
             _deck = newDeck;
           });
         },
+        floatingActionButton: _deck.isMaster
+            ? null
+            : Hero(
+                tag: 'deckCardViewFloatingButton',
+                child: SpeedDial(
+                  spaceBetweenChildren: 10,
+                  children: [
+                    SpeedDialChild(
+                      label: 'Edit Deck',
+                      child: const Icon(Icons.edit),
+                      onTap: () async {
+                        Deck? res = await Navigator.of(context).push(
+                          MaterialPageRoute(
+                            builder: (ctx) => ModifyDeck(existingDeck: _deck),
+                          ),
+                        );
+                        if (res != null) {
+                          setState(() {
+                            _deck = res;
+                          });
+                        }
+                      },
+                    ),
+                    SpeedDialChild(
+                      label: 'Delete Deck',
+                      child: const Icon(Icons.delete),
+                      onTap: () async {
+                        await DeckService.deleteDeck(_deck.id);
+                        if (mounted) Navigator.of(context).pop();
+                      },
+                    ),
+                  ],
+                  activeChild: const Icon(Icons.close),
+                  child: const Icon(Icons.settings),
+                ),
+              ),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: _deck.cards.map((card) {
