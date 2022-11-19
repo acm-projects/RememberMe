@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:rememberme/services/cardservice.dart';
+import 'package:rememberme/controllers/MemoryGameController.dart';
 import 'package:rememberme/services/deckservice.dart';
+import 'package:rememberme/widgets/MemoryGameTile.dart';
 
-class MemoryGame extends StatefulWidget
-{
-  MemoryGame({super.key, required this.deck});
+class MemoryGame extends StatefulWidget {
+  const MemoryGame({super.key, required this.deck});
 
   final Deck deck;
 
@@ -13,30 +13,48 @@ class MemoryGame extends StatefulWidget
 }
 
 class _MemoryGameState extends State<MemoryGame> {
-  List<_TileData> tileDataList = [];
+  List<MemoryGameTile> _tileWidgets = [];
+  late MemoryGameController _controller;
 
   @override
   void initState() {
     super.initState();
-    List<List<_TileData>> tileDataPairs = [];
-    widget.deck.cards.forEach((element) {
-      element.questions.entries.forEach((entry) {
-        tileDataPairs.add([
-          _TileData(card: element, data: entry.key, isQuestion: true),
-          _TileData(card: element, data: entry.value, isQuestion: false),
+    _controller = MemoryGameController();
+    List<List<MemoryGameTile>> widgetPairs = [];
+    for (var card in widget.deck.cards) {
+      for (var entry in card.questions.entries) {
+        widgetPairs.add([
+          // Question first always
+          MemoryGameTile(
+            key: UniqueKey(),
+            card: card,
+            data: entry.key,
+            isQuestion: true,
+            controller: _controller,
+          ),
+          MemoryGameTile(
+            key: UniqueKey(),
+            card: card,
+            data: entry.value,
+            isQuestion: false,
+            controller: _controller,
+          ),
         ]);
-      });
-    });
+      }
+    }
 
-    tileDataPairs.shuffle();
-    tileDataPairs = tileDataPairs.sublist(0,5); // Get first 5 pairs
-    tileDataList = tileDataPairs.expand((i) => i).toList(); // Flatten Array
-    tileDataList.shuffle();
+    widgetPairs.shuffle();
+    assert(widgetPairs.length >= 5); // Decks should be checked before
+    widgetPairs = widgetPairs.sublist(0, 5);
+    for (var pair in widgetPairs) {
+      _controller.registerPair(question: pair[0].key!, answer: pair[1].key!);
+    }
+    _tileWidgets = widgetPairs.expand((i) => i).toList(); // Flatten list
+    _tileWidgets.shuffle();
   }
 
   @override
-  Widget build(BuildContext context)
-  {
+  Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.white,
@@ -45,118 +63,45 @@ class _MemoryGameState extends State<MemoryGame> {
         title: const Text(
           'Ready To Remember?',
           style: TextStyle(
-            color: const Color.fromRGBO(255, 164, 116, 1),
+            color: Color.fromRGBO(255, 164, 116, 1),
             fontWeight: FontWeight.bold,
             fontSize: 30,
           ),
         ),
         leading: IconButton(
-            icon: const Icon(
-              Icons.arrow_back,
-              color: Colors.black,
-              size: 40,
-            ),
-            onPressed: () {
-              Navigator.pop(context);
-            }
-
+          icon: const Icon(
+            Icons.arrow_back,
+            color: Colors.black,
+            size: 40,
+          ),
+          onPressed: () {
+            Navigator.pop(context);
+          },
         ), // IconButton
       ),
-      body: buildGridView(),
+      body: GridView(
+        gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+          crossAxisCount: 2,
+          childAspectRatio: getGridChildAspectRatio(4),
+        ),
+        padding: const EdgeInsets.all(4),
+        children: _tileWidgets,
+      ),
     );
   }
 
-  Widget buildGridView() => GridView.builder(
-    gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-        crossAxisCount: 2,
-        mainAxisSpacing: 16,
-        crossAxisSpacing: 16,
-        childAspectRatio: 1/.80
-    ),
-    padding: const EdgeInsets.all(16),
+  double getGridChildAspectRatio(double padding) {
+    // https://stackoverflow.com/questions/48405123
+    var size = MediaQuery.of(context).size;
+    final pad = padding * 2;
+    final double itemHeight = (size.height - kToolbarHeight - 24 - pad) / 5;
+    final double itemWidth = (size.width - pad) / 2;
+    return itemWidth / itemHeight;
+  }
 
-    itemCount: tileDataList.length,
-    itemBuilder: (context, index){
-      final item = tileDataList[index];
-
-      return buildNumber(item);
-    },
-  );
-
-  Widget buildNumber(_TileData data) => Container(
-    padding: EdgeInsets.all(16.0),
-    color: Color.fromRGBO(92, 193, 175, 100),
-    decoration: BoxDecoration(
-      borderRadius: BorderRadius.circular(20),
-
-    ),
-
-    child: GridTile(
-      header: Text(
-        data.card.name,
-        textAlign: TextAlign.center,
-      ),
-      child: Center(
-        child: Text(
-          data.data,
-          style: TextStyle(fontWeight: FontWeight.bold, fontSize: 30),
-          textAlign: TextAlign.center,
-        ),
-      ),
-    ),
-  );
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
 }
-
-class _TileData {
-  final PersonCard card;
-  final String data;
-  final bool isQuestion;
-
-  _TileData({required this.card, required this.data, required this.isQuestion});
-}
-
-// body: SafeArea(
-//   child: Column(
-//      children: <Widget>[
-//        Padding(
-//          padding: EdgeInsets.all(16.0),
-//          child: GridView.builder(
-//              gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount: 2),
-//              itemBuilder: (context, index) => Container(
-//                margin: EdgeInsets.all(4.0),
-//                color: const Color.fromRGBO(92, 193, 175, 100),
-//              ),
-//            itemCount: 5,
-//          ),
-//        )
-//      ],
-//   )
-// ),
-
-
-// body: Stack(
-//   alignment: Alignment.topLeft,
-//   children: [
-//     Container(
-//       decoration: const BoxDecoration(
-//         color: Colors.white,
-//       ),
-//       child: Column(
-//         children: <Widget>[
-//           Padding(
-//             padding: EdgeInsets.all(16.0),
-//             child: GridView.builder(
-//               gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount: 2),
-//               itemBuilder: (context, index) => Container(
-//                 margin: EdgeInsets.all(4.0),
-//                 color: const Color.fromRGBO(92, 193, 175, 100),
-//               ),
-//               itemCount: 5,
-//             ),
-//           )
-//         ],
-//
-//       ),
-//     )
-//   ],
-// ),
