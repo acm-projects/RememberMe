@@ -76,6 +76,7 @@ flutter:
     - assets/OrangeFlower.jpg
     - assets/avatar.webp
     - assets/logo.png
+    - assets/human-brain.png
 
 
   # An image asset can refer to one or more resolution-specific "variants", see

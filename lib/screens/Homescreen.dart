@@ -100,36 +100,54 @@ class _HomepageState extends State<Homepage> {
               Stack(
                 alignment: AlignmentDirectional.center,
                 children: <Widget>[
-                  Icon(
-                    Icons.circle,
-                    size: 70,
-                    color: Color.fromARGB(90, 60, 200, 10),
+                  InkWell(
+                    child: Icon(
+                      Icons.circle,
+                      size: 70,
+                      color: Color.fromARGB(90, 60, 200, 10),
+                    ),
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => const Stats()),
+                      );
+                    },
                   ),
-                  DecoratedIcon(
-                      icon: Icon(Icons.star, size: 30, color: Colors.yellow),
-                      decoration: IconDecoration(
-                          shadows: [
-                            Shadow(
-                                blurRadius: 30,
-                                offset: Offset(1, 0),
-                                color: Colors.brown)
-                          ],
-                          gradient: LinearGradient(
-                            begin: Alignment.topCenter,
-                            end: Alignment.bottomCenter,
-                            colors: <Color>[
-                              Color(0xfffaf8f8),
-                              Color(0xfffae16c),
-                              Color.fromARGB(128, 250, 148, 75),
+                  InkWell(
+                    child: DecoratedIcon(
+                        icon: Icon(Icons.star, size: 30, color: Colors.yellow),
+                        decoration: IconDecoration(
+                            shadows: [
+                              Shadow(
+                                  blurRadius: 30,
+                                  offset: Offset(1, 0),
+                                  color: Colors.brown)
                             ],
-                          ))),
+                            gradient: LinearGradient(
+                              begin: Alignment.topCenter,
+                              end: Alignment.bottomCenter,
+                              colors: <Color>[
+                                Color(0xfffaf8f8),
+                                Color(0xfffae16c),
+                                Color.fromARGB(128, 250, 148, 75),
+                              ],
+                            ))),
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => const Stats()),
+                      );
+                    },
+                  ),
                 ],
               ),
               Container(margin: EdgeInsets.fromLTRB(20, 90, 10, 0)),
               Column(
                 children: <Widget>[
                   Container(
-                    margin: EdgeInsets.fromLTRB(0, 30, 0, 5),
+                    margin: EdgeInsets.fromLTRB(0, 0, 0, 0),
                     child: TextButton(
                       style: TextButton.styleFrom(
                         foregroundColor: Colors.black,
@@ -143,20 +161,11 @@ class _HomepageState extends State<Homepage> {
                               builder: (context) => const Stats()),
                         );
                       },
-                      child: Text('Achievement'),
+                      child: Text('${_masterCardList.length} cards added'),
                     ),
                   ),
 
-                  //For the actual achievement---------------------
-                  Container(
-                    margin: EdgeInsets.fromLTRB(0, 0, 0, 10),
-                    child: Text(
-                      '${_masterCardList.length} cards added',
-                      style: TextStyle(
-                        fontSize: 25,
-                      ),
-                    ),
-                  ),
+
                 ],
               ),
               Container(margin: EdgeInsets.fromLTRB(20, 90, 10, 0)),
@@ -175,13 +184,28 @@ class _HomepageState extends State<Homepage> {
             margin: const EdgeInsets.only(bottom: 10),
           ),
 
+          Container(
+            margin: const EdgeInsets.only(bottom: 10),
+          ),
+
           //THIS IS TO SET UP THE CAROUSEL
           const DeckCarousel(),
+
+          Container(
+            margin: const EdgeInsets.only(bottom: 10),
+          ),
+          //Image.asset('assets/human-brain.png', height: 100, width: 100),
 
           //THIS IS FOR A TEXT BUTTON TO SELECT 'Memory Games'
           //CHANGE ON-PRESSED ACTION TO GO TO ANOTHER SCREEN
           Container(
             margin: EdgeInsets.fromLTRB(25, 40, 25, 25),
+            decoration: BoxDecoration(
+              image: DecorationImage(
+                image: AssetImage('assets/human-brain.png'),
+                fit: BoxFit.fill
+              )
+            ),
             child: TextButton(
               style: TextButton.styleFrom(
                 foregroundColor: Colors.white,
@@ -198,6 +222,8 @@ class _HomepageState extends State<Homepage> {
               child: Text(' Memory Game ', style: TextStyle(fontFamily: 'BreeSerif')),
             ),
           ),
+
+
 
           Container(
             margin: EdgeInsets.fromLTRB(25, 0, 25, 25),
