@@ -114,7 +114,7 @@ packages:
     source: hosted
     version: "0.3.3+2"
   crypto:
-    dependency: transitive
+    dependency: "direct main"
     description:
       name: crypto
       url: "https://pub.dartlang.org"
@@ -142,7 +142,7 @@ packages:
     source: hosted
     version: "2.0.1"
   file:
-    dependency: transitive
+    dependency: "direct main"
     description:
       name: file
       url: "https://pub.dartlang.org"
@@ -366,6 +366,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "1.8.0"
+  mobile_scanner:
+    dependency: "direct main"
+    description:
+      name: mobile_scanner
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "2.1.0"
   multi_select_flutter:
     dependency: "direct main"
     description:
@@ -471,6 +478,20 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "4.2.4"
+  qr:
+    dependency: transitive
+    description:
+      name: qr
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "2.1.0"
+  qr_flutter:
+    dependency: "direct main"
+    description:
+      name: qr_flutter
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "4.0.0"
   rxdart:
     dependency: transitive
     description:

@@ -11,28 +11,26 @@ class UserAvatar extends StatefulWidget {
 }
 
 class _UserAvatarState extends State<UserAvatar> {
-  ImageProvider? _imageProvider;
   static final _defaultProvider = Image.asset('assets/avatar.webp').image;
 
   @override
   void initState() {
     super.initState();
-    _updateImage();
+    if (UserService.avatarNotifier.value == null) {
+      UserService.getUserAvatar();
+    }
   }
 
   @override
   Widget build(BuildContext context) {
-    return CircleAvatar(
-      radius: widget.radius,
-      backgroundImage: _imageProvider ?? _defaultProvider,
+    return ValueListenableBuilder(
+      valueListenable: UserService.avatarNotifier,
+      builder: (context, value, child) {
+        return CircleAvatar(
+          radius: widget.radius,
+          backgroundImage: value ?? _defaultProvider,
+        );
+      },
     );
-  }
-
-  _updateImage() {
-    UserService.getUserAvatar().then((value) {
-      setState(() {
-        _imageProvider = value;
-      });
-    });
   }
 }

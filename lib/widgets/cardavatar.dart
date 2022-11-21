@@ -13,44 +13,33 @@ class CardAvatar extends StatefulWidget {
 }
 
 class _CardAvatarState extends State<CardAvatar> {
-  bool _imageHasBeenRequested = true;
-  final _defaultImageProvider = Image.asset('assets/avatar.webp').image;
+  static final _defaultProvider = Image.asset('assets/avatar.webp').image;
 
   @override
   void initState() {
     super.initState();
-    _updateImage();
+    if (widget.card != null) {
+      var id = widget.card!.id;
+      if (!CardService.isImageCached(id)) {
+        CardService.getImage(id);
+      }
+    }
   }
 
   @override
   Widget build(BuildContext context) {
-    ImageProvider? provider;
-    if (widget.providerOverride != null) {
-      provider = widget.providerOverride;
-    } else if (widget.card != null) {
-      if (CardService.isImageCached(widget.card!.id)) {
-        provider = CardService.getImageFromCache(widget.card!.id);
-      } else if (!_imageHasBeenRequested) {
-        _updateImage();
-        _imageHasBeenRequested = true;
-      }
-    }
-
-    return CircleAvatar(
-      radius: widget.radius,
-      backgroundImage: provider ?? _defaultImageProvider,
-    );
-  }
-
-  _updateImage() {
-    if (widget.card != null) {
-      CardService.getImage(widget.card!.id).then((_) {
-        if (mounted) {
-          setState(() {
-            _imageHasBeenRequested = false;
-          });
+    return ValueListenableBuilder(
+      valueListenable: CardService.imageNotifier,
+      builder: (context, value, child) {
+        ImageProvider? prov;
+        if (widget.card != null && CardService.isImageCached(widget.card!.id)) {
+          prov = CardService.getImageFromCache(widget.card!.id);
         }
-      });
-    }
+        return CircleAvatar(
+          radius: widget.radius,
+          backgroundImage: widget.providerOverride ?? prov ?? _defaultProvider,
+        );
+      },
+    );
   }
 }

@@ -1,6 +1,6 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'profile.dart';
+import 'package:rememberme/screens/Homescreen.dart';
 import 'package:rememberme/services/authservice.dart';
 
 class LoginPage extends StatefulWidget {
@@ -30,7 +30,7 @@ class _LoginPageState extends State<LoginPage> {
             child: SingleChildScrollView(
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.end,
-                children: <Widget> [
+                children: <Widget>[
                   const Padding(
                     padding: EdgeInsets.fromLTRB(50, 40, 40, 50),
                     child: Text(
@@ -49,8 +49,12 @@ class _LoginPageState extends State<LoginPage> {
                     color: Colors.transparent,
                     child: Container(
                       decoration: const BoxDecoration(
-                        color: Color.fromRGBO(251,248,248, 0.9),
-                        borderRadius: BorderRadius.only(topLeft: Radius.circular(47.0), topRight: Radius.circular(47.0), bottomLeft: Radius.zero, bottomRight: Radius.zero),
+                        color: Color.fromRGBO(251, 248, 248, 0.9),
+                        borderRadius: BorderRadius.only(
+                            topLeft: Radius.circular(47.0),
+                            topRight: Radius.circular(47.0),
+                            bottomLeft: Radius.zero,
+                            bottomRight: Radius.zero),
                       ),
                       child: Form(
                         key: _formKey,
@@ -71,9 +75,11 @@ class _LoginPageState extends State<LoginPage> {
                                 ),
                               ),
                               Padding(
-                                padding: const EdgeInsets.fromLTRB(40, 0, 40, 40),
+                                padding:
+                                    const EdgeInsets.fromLTRB(40, 0, 40, 40),
                                 child: TextFormField(
-                                  decoration: const InputDecoration(hintText: 'Email'),
+                                  decoration:
+                                      const InputDecoration(hintText: 'Email'),
                                   keyboardType: TextInputType.emailAddress,
                                   validator: (value) {
                                     if (value == null || value.isEmpty) {
@@ -97,9 +103,11 @@ class _LoginPageState extends State<LoginPage> {
                                 ),
                               ),
                               Padding(
-                                padding: const EdgeInsets.fromLTRB(40, 0, 40, 70),
+                                padding:
+                                    const EdgeInsets.fromLTRB(40, 0, 40, 70),
                                 child: TextFormField(
-                                  decoration: const InputDecoration(hintText: 'Password'),
+                                  decoration: const InputDecoration(
+                                      hintText: 'Password'),
                                   obscureText: true,
                                   validator: (value) {
                                     if (value == null || value.isEmpty) {
@@ -122,10 +130,12 @@ class _LoginPageState extends State<LoginPage> {
                                     }
                                   },
                                   style: ElevatedButton.styleFrom(
-                                    backgroundColor: const Color.fromRGBO(255,164,116, 1),
-                                    shape: RoundedRectangleBorder( //to set border radius to button
-                                        borderRadius: BorderRadius.circular(20)
-                                    ),
+                                    backgroundColor:
+                                        const Color.fromRGBO(255, 164, 116, 1),
+                                    shape: RoundedRectangleBorder(
+                                        //to set border radius to button
+                                        borderRadius:
+                                            BorderRadius.circular(20)),
                                   ),
                                   child: const Text(
                                     'Log In',
@@ -147,7 +157,7 @@ class _LoginPageState extends State<LoginPage> {
           ),
           Padding(
             padding: const EdgeInsets.fromLTRB(5, 65, 0, 0),
-            child: Stack (
+            child: Stack(
               alignment: Alignment.center,
               children: [
                 Container(
@@ -166,15 +176,15 @@ class _LoginPageState extends State<LoginPage> {
                     ],
                   ),
                 ),
-                  IconButton(
-                    icon: Icon(
-                        Icons.arrow_back,
-                        color: Colors.black54,
-                    ),
-                    onPressed: (){
-                      Navigator.pop(context);
-                      },
+                IconButton(
+                  icon: Icon(
+                    Icons.arrow_back,
+                    color: Colors.black54,
                   ),
+                  onPressed: () {
+                    Navigator.pop(context);
+                  },
+                ),
               ],
             ),
           ),
@@ -183,15 +193,17 @@ class _LoginPageState extends State<LoginPage> {
     );
   }
 
-
-
   void _submit() async {
     String? message = await AuthService.login(_email, _password);
     if (message != null) {
       print("ERROR OCCURED WHEN LOGGING IN");
-    }
-    else {
-      Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (context) => Profile()));
+    } else {
+      if (mounted) {
+        Navigator.of(context).pushAndRemoveUntil(
+          MaterialPageRoute(builder: (context) => const Homepage()),
+          (route) => false,
+        );
+      }
     }
     //else {
     // print

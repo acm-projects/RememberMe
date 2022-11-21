@@ -3,8 +3,11 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:rememberme/screens/login-signup.dart';
+import 'package:rememberme/screens/modifycard.dart';
+import 'package:rememberme/screens/qrview.dart';
 import 'package:rememberme/services/authservice.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:rememberme/services/cardservice.dart';
 import 'package:rememberme/services/userservice.dart';
 import 'package:rememberme/widgets/roundedpage.dart';
 import 'package:rememberme/widgets/useravatar.dart';
@@ -17,32 +20,23 @@ class Profile extends StatefulWidget {
 }
 
 class _ProfileState extends State<Profile> {
-  final auth = FirebaseAuth.instance;
-
   @override
   Widget build(BuildContext context) {
     return RoundedPage(
-      title: 'Profile',
+      roundedMargin: 200,
+      bodyMargin: 0,
+      useListView: false,
       child: Column(
-        mainAxisAlignment: MainAxisAlignment.end,
+        crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
           Container(
-            height: 730,
-            width: 500,
-            color: Colors.transparent,
-            child: Container(
-              decoration: const BoxDecoration(
-                color: Color.fromRGBO(251, 250, 250, 1),
-                borderRadius: BorderRadius.only(
-                    topLeft: Radius.circular(47.0),
-                    topRight: Radius.circular(47.0),
-                    bottomLeft: Radius.zero,
-                    bottomRight: Radius.zero),
-              ),
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.start,
-                children: <Widget>[
-                  InkWell(
+            padding: const EdgeInsets.symmetric(horizontal: 20),
+            height: MediaQuery.of(context).size.height * 0.2,
+            child: Row(
+              children: [
+                Container(
+                  margin: const EdgeInsets.only(right: 16),
+                  child: InkWell(
                     onTap: () async {
                       var picker = ImagePicker();
                       var image = await picker.pickImage(
@@ -55,122 +49,154 @@ class _ProfileState extends State<Profile> {
                         setState(() {});
                       }
                     },
-                    child: const Padding(
-                      padding: EdgeInsets.all(30),
-                      child: SizedBox(
-                        height: 170,
-                        width: 170,
-                        child: UserAvatar(),
+                    child: const Hero(
+                      tag: 'userAvatar',
+                      child: UserAvatar(
+                        radius: 64,
                       ),
                     ),
                   ),
-                  Column(
-                    children: [
-                      const Padding(
-                        padding: EdgeInsets.fromLTRB(0, 10, 0, 0),
-                        child: Text(
-                          'Name:',
-                          style: TextStyle(
-                            color: Colors.black,
-                            fontWeight: FontWeight.bold,
-                            fontSize: 28,
-                          ),
-                          textAlign: TextAlign.left,
-                        ),
-                      ),
-                      Padding(
-                        padding: EdgeInsets.fromLTRB(0, 10, 0, 0),
-                        child: Text(
-                          displayName(),
-                          style: TextStyle(
-                            color: Colors.black,
-                            //fontWeight: FontWeight.bold,
-                            fontSize: 27,
-                          ),
-                          textAlign: TextAlign.center,
-                        ),
-                      ),
-                    ],
+                ),
+                Flexible(
+                  child: Text(
+                    AuthService.getUser()?.displayName ?? 'Hello!',
+                    style: const TextStyle(
+                      fontSize: 36,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.white,
+                    ),
                   ),
-                  Column(
-                    children: [
-                      const Padding(
-                        padding: EdgeInsets.fromLTRB(0, 40, 0, 0),
-                        child: Text(
-                          'Email:',
-                          style: TextStyle(
-                            color: Colors.black,
-                            fontWeight: FontWeight.bold,
-                            fontSize: 28,
-                          ),
-                          textAlign: TextAlign.center,
-                        ),
-                      ),
-                      Padding(
-                        padding: EdgeInsets.fromLTRB(0, 10, 0, 60),
-                        child: Text(
-                          displayEmail(),
-                          style: const TextStyle(
-                            color: Colors.black,
-                            //fontWeight: FontWeight.bold,
-                            fontSize: 27,
-                          ),
-                          textAlign: TextAlign.center,
-                        ),
-                      ),
-                    ],
-                  ),
-                  SizedBox(
-                    height: 80,
-                    width: 300,
-                    child: ElevatedButton(
-                      onPressed: () {
-                        auth.signOut();
-                        Navigator.of(context).pushReplacement(MaterialPageRoute(
-                            builder: (context) => LoginOptions()));
-                      },
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: const Color.fromRGBO(255, 164, 116, 1),
-                        shape: RoundedRectangleBorder(
-                            //to set border radius to button
-                            borderRadius: BorderRadius.circular(20)),
-                      ),
-                      child: const Text(
-                        'Sign Out',
-                        style: TextStyle(
-                          color: Colors.white,
-                          fontWeight: FontWeight.bold,
-                          fontSize: 25,
-                        ),
-                      ),
+                ),
+              ],
+            ),
+          ),
+          Container(
+            padding: const EdgeInsets.symmetric(horizontal: 30),
+            margin: const EdgeInsets.only(top: 80),
+            child: RichText(
+              text: TextSpan(
+                text: 'Email\n',
+                style: const TextStyle(
+                  fontSize: 24,
+                  color: Colors.black,
+                  fontWeight: FontWeight.bold,
+                ),
+                children: [
+                  TextSpan(
+                    text: AuthService.getUser()?.email,
+                    style: const TextStyle(
+                      fontWeight: FontWeight.normal,
                     ),
                   ),
                 ],
               ),
             ),
           ),
+          Container(
+            padding: const EdgeInsets.symmetric(horizontal: 30),
+            margin: const EdgeInsets.only(top: 20),
+            child: RichText(
+              text: TextSpan(
+                text: 'Verification Status\n',
+                style: const TextStyle(
+                  fontSize: 24,
+                  color: Colors.black,
+                  fontWeight: FontWeight.bold,
+                ),
+                children: [
+                  TextSpan(
+                    text: AuthService.getUser()?.emailVerified == true
+                        ? 'Verified'
+                        : 'Unverified',
+                    style: const TextStyle(
+                      fontWeight: FontWeight.normal,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
+          Container(
+            padding: const EdgeInsets.symmetric(horizontal: 22),
+            margin: const EdgeInsets.only(top: 20),
+            alignment: AlignmentDirectional.centerStart,
+            child: TextButton.icon(
+              onPressed: () => Navigator.of(context).push(
+                MaterialPageRoute(builder: (_) => const QRView()),
+              ),
+              icon: const Icon(Icons.qr_code, size: 24),
+              label: const Text(
+                'View Personal QR Code',
+                style: TextStyle(
+                  fontSize: 20,
+                ),
+              ),
+              style: TextButton.styleFrom(
+                foregroundColor: Colors.black,
+              ),
+            ),
+          ),
+          Container(
+            padding: const EdgeInsets.symmetric(horizontal: 22),
+            alignment: AlignmentDirectional.centerStart,
+            child: TextButton.icon(
+              onPressed: () async {
+                var tuple = await CardService.getPublicCardAndImage();
+                if (mounted) {
+                  Navigator.of(context).push(
+                    MaterialPageRoute(
+                      builder: (_) => ModifyCard(
+                        existingCard: tuple?.item1,
+                        existingImage: tuple?.item2,
+                        personal: true,
+                      ),
+                    ),
+                  );
+                }
+              },
+              icon: const Icon(Icons.note_add_outlined, size: 24),
+              label: const Text(
+                'Edit Personal Card',
+                style: TextStyle(
+                  fontSize: 20,
+                ),
+              ),
+              style: TextButton.styleFrom(
+                foregroundColor: Colors.black,
+              ),
+            ),
+          ),
+          const Spacer(),
+          Container(
+            margin: const EdgeInsets.fromLTRB(40, 0, 40, 40),
+            child: ElevatedButton(
+              onPressed: () async {
+                await FirebaseAuth.instance.signOut();
+                if (mounted) {
+                  Navigator.of(context).pushAndRemoveUntil(
+                    MaterialPageRoute(builder: (_) => LoginOptions()),
+                    (route) => false,
+                  );
+                }
+              },
+              style: ElevatedButton.styleFrom(
+                backgroundColor: Theme.of(context).primaryColor,
+                shape: RoundedRectangleBorder(
+                    //to set border radius to button
+                    borderRadius: BorderRadius.circular(20)),
+              ),
+              child: const Text(
+                'Sign Out',
+                style: TextStyle(
+                  color: Colors.white,
+                  fontWeight: FontWeight.bold,
+                  fontSize: 25,
+                ),
+              ),
+            ),
+          )
         ],
       ),
     );
-  }
-
-  String displayName() {
-    String name = "";
-    if (AuthService.getUser() != null) {
-      if (AuthService.getUser()?.displayName != null) {
-        name = (AuthService.getUser()?.displayName).toString();
-      }
-    }
-    return name;
-  }
-
-  String displayEmail() {
-    String email = "";
-    if (AuthService.getUser() != null) {
-      if (AuthService.getUser()?.email != null) {
-        email = (AuthService.getUser()?.email).toString();
-      }
-    }
-    return email;
   }
 }
