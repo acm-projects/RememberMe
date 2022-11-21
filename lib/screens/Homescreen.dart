@@ -1,14 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_speed_dial/flutter_speed_dial.dart';
-import 'package:multi_select_flutter/dialog/mult_select_dialog.dart';
-import 'package:multi_select_flutter/util/multi_select_item.dart';
-import 'package:rememberme/Screens/MemorySelect.dart';
 import 'package:rememberme/screens/CardView.dart';
-import 'package:rememberme/screens/MemoryGame.dart';
 import 'package:rememberme/screens/Stats.dart';
 import 'package:rememberme/screens/modifycard.dart';
 import 'package:rememberme/screens/profile.dart';
 import 'package:rememberme/screens/modifydeck.dart';
+import 'package:rememberme/screens/qrscan.dart';
+import 'package:rememberme/screens/qrview.dart';
 import 'package:rememberme/services/authservice.dart';
 import 'package:rememberme/services/cardservice.dart';
 import 'package:rememberme/services/deckservice.dart';
@@ -41,7 +39,7 @@ class _HomepageState extends State<Homepage> {
   @override
   Widget build(BuildContext context) {
     return RoundedPage(
-      title: 'Welcome ${AuthService.getUser()?.displayName ?? 'Back'}!',
+      title: 'Welcome ${AuthService.getUser()?.displayName?.split(' ')[0]}!',
       floatingActionButton: SpeedDial(
         icon: Icons.add,
         activeIcon: Icons.close,
@@ -51,7 +49,8 @@ class _HomepageState extends State<Homepage> {
           SpeedDialChild(
             label: 'New Card',
             labelStyle: TextStyle(fontSize: 22),
-            child: const Icon(Icons.note_add, size: 30, color: Color.fromRGBO(239, 119, 55, 1.0)),
+            child: const Icon(Icons.note_add,
+                size: 30, color: Color.fromRGBO(239, 119, 55, 1.0)),
             onTap: () => Navigator.of(context).push(
               MaterialPageRoute(builder: (_) => const ModifyCard()),
             ),
@@ -59,9 +58,22 @@ class _HomepageState extends State<Homepage> {
           SpeedDialChild(
             label: 'New Deck',
             labelStyle: TextStyle(fontSize: 22),
-            child: const Icon(Icons.collections_bookmark, size: 30, color: Color.fromRGBO(239, 119, 55, 1.0)),
+            child: const Icon(Icons.collections_bookmark,
+                size: 30, color: Color.fromRGBO(239, 119, 55, 1.0)),
             onTap: () => Navigator.of(context).push(
               MaterialPageRoute(builder: (_) => const ModifyDeck()),
+            ),
+          ),
+          SpeedDialChild(
+            label: 'QR Code',
+            labelStyle: TextStyle(fontSize: 22),
+            child: const Icon(Icons.qr_code_outlined,
+                size: 30, color: Color.fromRGBO(239, 119, 55, 1.0)),
+            onTap: () => Navigator.of(context).push(
+              MaterialPageRoute(builder: (_) => const QRScan()),
+            ),
+            onLongPress: () => Navigator.of(context).push(
+              MaterialPageRoute(builder: (_) => const QRView()),
             ),
           ),
         ],
@@ -89,7 +101,12 @@ class _HomepageState extends State<Homepage> {
         },
         child: Container(
           margin: const EdgeInsets.all(8),
-          child: const UserAvatar(),
+          child: const Hero(
+            tag: 'userAvatar',
+            child: UserAvatar(
+              radius: 64,
+            ),
+          ),
         ),
       ),
       child: Column(
@@ -109,8 +126,7 @@ class _HomepageState extends State<Homepage> {
                     onTap: () {
                       Navigator.push(
                         context,
-                        MaterialPageRoute(
-                            builder: (context) => const Stats()),
+                        MaterialPageRoute(builder: (context) => const Stats()),
                       );
                     },
                   ),
@@ -136,8 +152,7 @@ class _HomepageState extends State<Homepage> {
                     onTap: () {
                       Navigator.push(
                         context,
-                        MaterialPageRoute(
-                            builder: (context) => const Stats()),
+                        MaterialPageRoute(builder: (context) => const Stats()),
                       );
                     },
                   ),
@@ -164,8 +179,6 @@ class _HomepageState extends State<Homepage> {
                       child: Text('${_masterCardList.length} cards added'),
                     ),
                   ),
-
-
                 ],
               ),
               Container(margin: EdgeInsets.fromLTRB(20, 90, 10, 0)),
@@ -201,11 +214,9 @@ class _HomepageState extends State<Homepage> {
           Container(
             margin: EdgeInsets.fromLTRB(25, 40, 25, 25),
             decoration: BoxDecoration(
-              image: DecorationImage(
-                image: AssetImage('assets/human-brain.png'),
-                fit: BoxFit.fill
-              )
-            ),
+                image: DecorationImage(
+                    image: AssetImage('assets/human-brain.png'),
+                    fit: BoxFit.fill)),
             child: TextButton(
               style: TextButton.styleFrom(
                 foregroundColor: Colors.white,
@@ -219,11 +230,10 @@ class _HomepageState extends State<Homepage> {
                 textStyle: TextStyle(fontSize: 25),
               ),
               onPressed: () => MemoryGameSelectDialog.showSelectDialog(context),
-              child: Text(' Memory Game ', style: TextStyle(fontFamily: 'BreeSerif')),
+              child: Text(' Memory Game ',
+                  style: TextStyle(fontFamily: 'BreeSerif')),
             ),
           ),
-
-
 
           Container(
             margin: EdgeInsets.fromLTRB(25, 0, 25, 25),
@@ -245,7 +255,8 @@ class _HomepageState extends State<Homepage> {
                   MaterialPageRoute(builder: (context) => const Stats()),
                 );
               },
-              child: Text(' View Statistics ', style: TextStyle(fontFamily: 'BreeSerif')),
+              child: Text(' View Statistics ',
+                  style: TextStyle(fontFamily: 'BreeSerif')),
             ),
           ),
         ],

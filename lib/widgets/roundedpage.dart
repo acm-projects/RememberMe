@@ -68,22 +68,12 @@ class RoundedPage extends StatelessWidget {
         backgroundColor: Theme.of(context).primaryColor,
         toolbarHeight: 85,
         elevation: 0,
-        flexibleSpace:
-        // FlexibleSpaceBar(
-        //   centerTitle: true,
-        //     title:
-        //     title != null ? Text(title!,
-        //       style: TextStyle(fontSize: 25, fontFamily: 'BoldMontserrat', fontWeight: FontWeight.bold,
-        //           color: Color.fromARGB(250, 250, 250, 250)),) : null
-        // ),
-        //
-        Padding(
-          padding: const EdgeInsets.fromLTRB(0, 40, 0, 0),
-            child: title != null ? Center(child: Text(title!,
-              style: TextStyle(fontSize: 26, fontFamily: 'BoldMontserrat', fontWeight: FontWeight.bold,
-              color: Color.fromARGB(250, 250, 250, 250)),) ) : null
+        title: title != null ? Text(title!) : null,
+        titleTextStyle: const TextStyle(
+          fontSize: 26,
+          fontFamily: 'BoldMontserrat',
+          fontWeight: FontWeight.bold,
         ),
-       //title: title != null ? Text(title!) : null,
         actions: appBarActions,
         leading: leading,
       ),

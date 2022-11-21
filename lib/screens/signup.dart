@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:rememberme/screens/profile.dart';
+import 'package:rememberme/screens/Homescreen.dart';
 import 'package:rememberme/services/authservice.dart';
 
 class SignUp extends StatefulWidget {
@@ -13,7 +13,7 @@ class _SignUpState extends State<SignUp> {
   final _formKey = GlobalKey<FormState>();
   //final auth = FirebaseAuth.instance;
 
-  late String _email ,_password, _name;
+  late String _email, _password, _name;
 
   @override
   Widget build(BuildContext context) {
@@ -45,17 +45,20 @@ class _SignUpState extends State<SignUp> {
                   height: 700,
                   width: 500,
                   color: Colors.transparent,
-
                   child: Container(
                     decoration: const BoxDecoration(
-                      color: Color.fromRGBO(251,248,248, 0.9),
-                      borderRadius: BorderRadius.only(topLeft: Radius.circular(47.0), topRight: Radius.circular(47.0), bottomLeft: Radius.zero, bottomRight: Radius.zero),
+                      color: Color.fromRGBO(251, 248, 248, 0.9),
+                      borderRadius: BorderRadius.only(
+                          topLeft: Radius.circular(47.0),
+                          topRight: Radius.circular(47.0),
+                          bottomLeft: Radius.zero,
+                          bottomRight: Radius.zero),
                     ),
                     child: Form(
                       key: _formKey,
                       child: Column(
                         mainAxisAlignment: MainAxisAlignment.start,
-                        children: <Widget> [
+                        children: <Widget>[
                           const Padding(
                             padding: EdgeInsets.fromLTRB(30, 50, 30, 30),
                             child: Text(
@@ -72,7 +75,8 @@ class _SignUpState extends State<SignUp> {
                             padding: const EdgeInsets.fromLTRB(40, 0, 40, 40),
                             child: TextFormField(
                               // The validator receives the text that the user has entered.
-                              decoration: const InputDecoration(hintText: 'Name'),
+                              decoration:
+                                  const InputDecoration(hintText: 'Name'),
                               validator: (value) {
                                 if (value == null || value.isEmpty) {
                                   return 'Please enter a name';
@@ -95,9 +99,10 @@ class _SignUpState extends State<SignUp> {
                             ),
                           ),
                           Padding(
-                          padding: const EdgeInsets.fromLTRB(40, 0, 40, 40),
+                            padding: const EdgeInsets.fromLTRB(40, 0, 40, 40),
                             child: TextFormField(
-                              decoration: const InputDecoration(hintText: 'Email'),
+                              decoration:
+                                  const InputDecoration(hintText: 'Email'),
                               validator: (value) {
                                 if (value == null || value.isEmpty) {
                                   return 'Please enter an email';
@@ -122,7 +127,8 @@ class _SignUpState extends State<SignUp> {
                           Padding(
                             padding: const EdgeInsets.fromLTRB(40, 0, 40, 70),
                             child: TextFormField(
-                              decoration: const InputDecoration(hintText: 'Password'),
+                              decoration:
+                                  const InputDecoration(hintText: 'Password'),
                               obscureText: true,
                               validator: (value) {
                                 if (value == null || value.isEmpty) {
@@ -145,10 +151,11 @@ class _SignUpState extends State<SignUp> {
                                 }
                               },
                               style: ElevatedButton.styleFrom(
-                                backgroundColor: const Color.fromRGBO(255,164,116, 1),
-                                shape: RoundedRectangleBorder( //to set border radius to button
-                                    borderRadius: BorderRadius.circular(20)
-                                ),
+                                backgroundColor:
+                                    const Color.fromRGBO(255, 164, 116, 1),
+                                shape: RoundedRectangleBorder(
+                                    //to set border radius to button
+                                    borderRadius: BorderRadius.circular(20)),
                               ),
                               child: const Text(
                                 'Sign Up',
@@ -170,7 +177,7 @@ class _SignUpState extends State<SignUp> {
           ),
           Padding(
             padding: const EdgeInsets.fromLTRB(5, 65, 0, 0),
-            child: Stack (
+            child: Stack(
               alignment: Alignment.center,
               children: [
                 Container(
@@ -194,7 +201,7 @@ class _SignUpState extends State<SignUp> {
                     Icons.arrow_back,
                     color: Colors.black54,
                   ),
-                  onPressed: (){
+                  onPressed: () {
                     Navigator.pop(context);
                   },
                 ),
@@ -210,10 +217,14 @@ class _SignUpState extends State<SignUp> {
     String? message = await AuthService.signup(_email, _password, _name);
     if (message != null) {
       print("ERROR OCCURED WHEN SIGNING UP");
-    }
-    else {
+    } else {
       // change to lead to the home screen
-      Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (context) => Profile()));
+      if (mounted) {
+        Navigator.of(context).pushAndRemoveUntil(
+          MaterialPageRoute(builder: (context) => const Homepage()),
+          (route) => false,
+        );
+      }
     }
     /*void _submit() async {
       ScaffoldMessenger.of(context).showSnackBar(
@@ -236,7 +247,7 @@ class _SignUpState extends State<SignUp> {
         ),
       );*/
 
-      /*String? message = await AuthService.signup(_email, _password, _name);
+    /*String? message = await AuthService.signup(_email, _password, _name);
       if (message != null) {
         print(message);
       }
@@ -246,6 +257,5 @@ class _SignUpState extends State<SignUp> {
       //else {
        // print
       //}*/
-    }
-
+  }
 }

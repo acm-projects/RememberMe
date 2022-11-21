@@ -11,9 +11,17 @@ import 'package:rememberme/widgets/catchpop.dart';
 import 'package:rememberme/widgets/roundedpage.dart';
 
 class ModifyCard extends StatefulWidget {
-  const ModifyCard({super.key, this.existingCard});
+  const ModifyCard({
+    super.key,
+    this.existingCard,
+    this.existingImage,
+    this.saveToNewCard = false,
+    this.personal = false,
+  });
 
   final PersonCard? existingCard;
+  final File? existingImage;
+  final bool saveToNewCard, personal;
 
   @override
   State<StatefulWidget> createState() => _ModifyCardState();
@@ -43,6 +51,9 @@ class _ModifyCardState extends State<ModifyCard> {
       _questionWidgets.add(
         _getDefaultQuestionWidget(null, null),
       );
+    }
+    if (widget.existingImage != null) {
+      _cardImage = widget.existingImage;
     }
     super.initState();
   }
@@ -100,29 +111,7 @@ class _ModifyCardState extends State<ModifyCard> {
                     ),
                   ),
                 ),
-                Card(
-                  margin: const EdgeInsets.symmetric(vertical: 6),
-                  child: Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 6),
-                    child: TextButton.icon(
-                      onPressed: () => _showDeckDialog(),
-                      style: TextButton.styleFrom(
-                        alignment: Alignment.centerLeft,
-                      ),
-                      icon: const Icon(
-                        Icons.add,
-                        color: Colors.black,
-                      ),
-                      label: Text(
-                        ' Add to Deck(s)',
-                        style: TextStyle(
-                          fontSize: 20,
-                          color: Theme.of(context).hintColor,
-                        ),
-                      ),
-                    ),
-                  ),
-                ),
+                ..._getDecksButtonAsList(),
                 ..._questionWidgets,
                 RawMaterialButton(
                   onPressed: () {
@@ -162,6 +151,35 @@ class _ModifyCardState extends State<ModifyCard> {
         });
       },
     );
+  }
+
+  List<Widget> _getDecksButtonAsList() {
+    if (widget.personal) return [];
+    return [
+      Card(
+        margin: const EdgeInsets.symmetric(vertical: 6),
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 6),
+          child: TextButton.icon(
+            onPressed: () => _showDeckDialog(),
+            style: TextButton.styleFrom(
+              alignment: Alignment.centerLeft,
+            ),
+            icon: const Icon(
+              Icons.add,
+              color: Colors.black,
+            ),
+            label: Text(
+              ' Add to Deck(s)',
+              style: TextStyle(
+                fontSize: 20,
+                color: Theme.of(context).hintColor,
+              ),
+            ),
+          ),
+        ),
+      ),
+    ];
   }
 
   void _showDeckDialog() {
@@ -237,7 +255,13 @@ class _ModifyCardState extends State<ModifyCard> {
 
     try {
       PersonCard card;
-      if (widget.existingCard == null) {
+      if (widget.personal) {
+        card = await CardService.modifyPublicCard(PersonCard(
+          id: CardService.getPublicCardId(),
+          name: _name!,
+          questions: _questions,
+        ));
+      } else if (widget.existingCard == null || widget.saveToNewCard) {
         card = await CardService.addCard(
           name: _name!,
           questions: _questions,
@@ -251,7 +275,12 @@ class _ModifyCardState extends State<ModifyCard> {
       }
       // Update image if needed
       if (_cardImage != null) {
-        var err = await CardService.updateCardImage(card.id, _cardImage!);
+        Exception? err;
+        if (!widget.personal) {
+          err = await CardService.updateCardImage(card.id, _cardImage!);
+        } else {
+          err = await CardService.updatePublicImage(card.id, _cardImage!);
+        }
         if (err != null) {
           // Recreate the error because firebase is stupid
           throw err;
