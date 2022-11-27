@@ -49,7 +49,7 @@ class _Stats extends State<Stats> {
 
 
 
-      body: Column(
+      body: ListView(
           children: <Widget>[
             //For achievement heading on the Homepage-------------------------
 
