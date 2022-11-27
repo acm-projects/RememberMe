@@ -101,6 +101,10 @@ flutter:
     - family: BreeSerif
       fonts:
         - asset: assets/fonts/Bree_serif.ttf
+
+    - family: Poppins
+      fonts:
+        - asset: assets/fonts/Poppins Medium 500.ttf
       #uses-material-design: true
   # fonts:
   #   - family: Schyler

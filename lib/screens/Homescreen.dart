@@ -231,7 +231,7 @@ class _HomepageState extends State<Homepage> {
               ),
               onPressed: () => MemoryGameSelectDialog.showSelectDialog(context),
               child: Text(' Memory Game ',
-                  style: TextStyle(fontFamily: 'BreeSerif')),
+                  style: TextStyle(fontFamily: 'Poppins')),
             ),
           ),
 
@@ -256,7 +256,7 @@ class _HomepageState extends State<Homepage> {
                 );
               },
               child: Text(' View Statistics ',
-                  style: TextStyle(fontFamily: 'BreeSerif')),
+                  style: TextStyle(fontFamily: 'Poppins')),
             ),
           ),
         ],
