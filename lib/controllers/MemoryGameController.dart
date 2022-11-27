@@ -2,10 +2,14 @@ import 'package:flutter/widgets.dart';
 import 'package:tuple/tuple.dart';
 
 class MemoryGameController {
-  MemoryGameController() {
+  MemoryGameController({
+    this.onGameEnd,
+  }) {
     questionNotifier.addListener(() => _checkForAnswer());
     answerNotifier.addListener(() => _checkForAnswer());
   }
+
+  final void Function()? onGameEnd;
 
   final ValueNotifier<Key?> questionNotifier = ValueNotifier(null);
   final ValueNotifier<Key?> answerNotifier = ValueNotifier(null);
@@ -47,9 +51,12 @@ class MemoryGameController {
         } else {
           _wrongGuesses++;
         }
-
         questionNotifier.value = null;
         answerNotifier.value = null;
+
+        if (correctGuesses >= _pairs.length && onGameEnd != null) {
+          onGameEnd!();
+        }
       }
     }
   }

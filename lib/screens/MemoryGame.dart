@@ -19,7 +19,7 @@ class _MemoryGameState extends State<MemoryGame> {
   @override
   void initState() {
     super.initState();
-    _controller = MemoryGameController();
+    _controller = MemoryGameController(onGameEnd: onGameEnd);
     List<List<MemoryGameTile>> widgetPairs = [];
     for (var card in widget.deck.cards) {
       for (var entry in card.questions.entries) {
@@ -103,5 +103,9 @@ class _MemoryGameState extends State<MemoryGame> {
   void dispose() {
     _controller.dispose();
     super.dispose();
+  }
+
+  void onGameEnd() {
+    // add end game logic here
   }
 }
