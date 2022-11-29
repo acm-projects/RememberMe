@@ -19,7 +19,7 @@ class _EndPageState extends State<EndPage> {
   Widget build(BuildContext context) {
     int correct = widget.m.correctGuesses;
     int wrong = widget.m.wrongGuesses;
-    int accuracy = (((wrong - correct).abs() / correct) * 100).round();
+    int accuracy = (correct / (correct + wrong) * 100).round();
 
     return Scaffold(
         body: Padding(
@@ -75,7 +75,7 @@ class _EndPageState extends State<EndPage> {
                 Padding(
                   padding: const EdgeInsets.fromLTRB(20, 30, 20, 10),
                   child: Text(
-                    'Accuarcy:          ${accuracy}%',
+                    'Accuracy:          ${accuracy}%',
                     style: TextStyle(
                       color: Colors.black,
                       fontSize: 25,

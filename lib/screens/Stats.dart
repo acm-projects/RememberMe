@@ -98,7 +98,7 @@ class _Stats extends State<Stats> {
               }),
           const CustomStats(
             titleText: "High Score Today",
-            achievement: "Memory Game: 90%",
+            achievement: "Memory Game: 100%",
           ),
         ],
       ),

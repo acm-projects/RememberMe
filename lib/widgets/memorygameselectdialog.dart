@@ -48,13 +48,11 @@ class MemoryGameSelectDialog extends StatefulWidget {
 }
 
 class _MemoryGameSelectDialogState extends State<MemoryGameSelectDialog> {
-  late Deck _selectedDeck;
   List<Deck> _sortedDecks = [];
 
   @override
   void initState() {
     super.initState();
-    _selectedDeck = widget.decks.firstWhere((deck) => deck.isMaster);
     _sortedDecks = widget.decks.sublist(0);
     _sortedDecks.sort(
       (a, b) => _getQuestionCount(b).compareTo(_getQuestionCount(a)),
@@ -93,7 +91,7 @@ class _MemoryGameSelectDialogState extends State<MemoryGameSelectDialog> {
                       Navigator.of(context).pushReplacement(
                         MaterialPageRoute(
                           builder: (context) => MemoryGame(
-                            deck: _selectedDeck,
+                            deck: deck,
                           ),
                         ),
                       );
