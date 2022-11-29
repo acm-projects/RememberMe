@@ -53,9 +53,9 @@ class _EndPageState extends State<EndPage> {
                 children: [
 
                   Padding(
-                    padding: const EdgeInsets.all(20),
+                    padding: const EdgeInsets.fromLTRB(20, 0, 20, 30),
                     child: Text(
-                      'Attempts Made:           ${correct+wrong}',
+                      'Attempts Made:        ${correct+wrong}',
                       style: TextStyle(
                         color: Colors.black,
                         fontSize: 25,
@@ -66,7 +66,7 @@ class _EndPageState extends State<EndPage> {
                   Padding(
                     padding: const EdgeInsets.all(20),
                     child: Text(
-                      'Missed Attempts:         ${wrong}',
+                      'Missed Attempts:      ${wrong}',
                       style: TextStyle(
                         color: Colors.black,
                         fontSize: 25,
@@ -75,9 +75,9 @@ class _EndPageState extends State<EndPage> {
                     ),
                   ),
                   Padding(
-                    padding: const EdgeInsets.all(20),
+                    padding: const EdgeInsets.fromLTRB(20, 30, 20, 20),
                     child: Text(
-                      '  Accuarcy:            ${accuracy} %',
+                      'Accuarcy:          ${accuracy}%',
                       style: TextStyle(
                         color: Colors.black,
                         fontSize: 25,
