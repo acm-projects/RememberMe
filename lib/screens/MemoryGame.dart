@@ -109,6 +109,8 @@ class _MemoryGameState extends State<MemoryGame> {
 
   void onGameEnd() {
     // add end game logic here
-    Navigator.of(context).push(MaterialPageRoute(builder: (context)=>EndPage(m: _controller)));
+    Navigator.of(context).pushReplacement(
+      MaterialPageRoute(builder: (context) => EndPage(m: _controller)),
+    );
   }
 }
