@@ -1,3 +1,4 @@
+import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
 import 'package:rememberme/screens/MemoryGame.dart';
 import 'package:rememberme/services/deckservice.dart';
@@ -48,55 +49,79 @@ class MemoryGameSelectDialog extends StatefulWidget {
 
 class _MemoryGameSelectDialogState extends State<MemoryGameSelectDialog> {
   late Deck _selectedDeck;
+  List<Deck> _sortedDecks = [];
 
   @override
   void initState() {
     super.initState();
     _selectedDeck = widget.decks.firstWhere((deck) => deck.isMaster);
+    _sortedDecks = widget.decks.sublist(0);
+    _sortedDecks.sort(
+      (a, b) => _getQuestionCount(b).compareTo(_getQuestionCount(a)),
+    );
   }
 
   @override
   Widget build(BuildContext context) {
     return AlertDialog(
+      title: const Text('Choose a deck'),
       actions: [
         TextButton(
-          onPressed: () => Navigator.of(context).pushReplacement(
-            MaterialPageRoute(
-              builder: (context) => MemoryGame(
-                deck: _selectedDeck,
-              ),
-            ),
-          ),
-          child: const Text('Play!'),
+          onPressed: () => Navigator.of(context).pop(),
+          child: const Text('Back'),
         ),
       ],
-      content: Column(
-        children: widget.decks.map(
-          (deck) {
-            var qCount = deck.cards.fold(
-              0,
-              (val, card) => val + card.questions.length,
-            );
-            return RadioListTile(
-              groupValue: _selectedDeck,
-              value: deck,
-              onChanged: (value) {
-                if (value != null && qCount >= 5) {
-                  setState(() {
-                    _selectedDeck = value;
-                  });
-                }
-              },
-              title: Text(
-                deck.name,
-                style: TextStyle(
-                  color: qCount >= 5 ? Colors.black : Colors.grey,
+      content: SizedBox(
+        width: MediaQuery.of(context).size.width,
+        height: MediaQuery.of(context).size.height,
+        child: GridView(
+          gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+            crossAxisCount: 2,
+          ),
+          padding: const EdgeInsets.all(4),
+          children: _sortedDecks.map(
+            (deck) {
+              var qCount = _getQuestionCount(deck);
+              var color = qCount > 5
+                  ? Theme.of(context).primaryColorLight
+                  : const Color(0xffcccccc);
+              return Card(
+                color: color,
+                child: InkWell(
+                  onTap: () {
+                    if (qCount > 5) {
+                      Navigator.of(context).pushReplacement(
+                        MaterialPageRoute(
+                          builder: (context) => MemoryGame(
+                            deck: _selectedDeck,
+                          ),
+                        ),
+                      );
+                    }
+                  },
+                  child: Center(
+                    child: Padding(
+                      padding: const EdgeInsets.all(8),
+                      child: AutoSizeText(
+                        deck.name,
+                        textAlign: TextAlign.center,
+                        minFontSize: 16,
+                      ),
+                    ),
+                  ),
                 ),
-              ),
-            );
-          },
-        ).toList(),
+              );
+            },
+          ).toList(),
+        ),
       ),
+    );
+  }
+
+  int _getQuestionCount(Deck deck) {
+    return deck.cards.fold(
+      0,
+      (val, card) => val + card.questions.length,
     );
   }
 }

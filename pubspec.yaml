@@ -55,6 +55,9 @@ dependencies:
   mobile_scanner: ^2.1.0
   crypto: ^3.0.2
   file: ^6.1.4
+  animate_gradient: ^0.0.2
+  vector_math: ^2.1.2
+  font_awesome_flutter: ^10.2.1
 
 dev_dependencies:
   flutter_test:
