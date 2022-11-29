@@ -12,7 +12,6 @@ import 'package:rememberme/services/cardservice.dart';
 import 'package:rememberme/services/deckservice.dart';
 import 'package:rememberme/widgets/MemoryGameButton.dart';
 import 'package:rememberme/widgets/deckcarousel.dart';
-import 'package:rememberme/widgets/memorygameselectdialog.dart';
 import 'package:rememberme/widgets/roundedpage.dart';
 import 'package:icon_decoration/icon_decoration.dart';
 import 'package:rememberme/widgets/useravatar.dart';
@@ -120,38 +119,36 @@ class _HomepageState extends State<Homepage> {
                 MaterialPageRoute(builder: (context) => const Stats()),
               );
             },
-            icon: Stack(
-              alignment: AlignmentDirectional.center,
-              children: const [
-                Icon(
-                  Icons.circle,
-                  size: 70,
-                  color: Color.fromARGB(90, 60, 200, 10),
-                ),
-                DecoratedIcon(
-                  icon: Icon(Icons.star, size: 30, color: Colors.yellow),
-                  decoration: IconDecoration(
-                    shadows: [
-                      Shadow(
-                          blurRadius: 30,
-                          offset: Offset(1, 0),
-                          color: Colors.brown)
+            icon: Container(
+              padding: const EdgeInsets.all(12),
+              decoration: const BoxDecoration(
+                color: Color.fromARGB(70, 60, 200, 10),
+                shape: BoxShape.circle,
+              ),
+              child: const DecoratedIcon(
+                icon: Icon(Icons.star, size: 35, color: Colors.yellow),
+                decoration: IconDecoration(
+                  shadows: [
+                    Shadow(
+                      blurRadius: 20,
+                      offset: Offset(1, 0),
+                      color: Colors.brown,
+                    )
+                  ],
+                  gradient: LinearGradient(
+                    begin: Alignment.topCenter,
+                    end: Alignment.bottomCenter,
+                    colors: <Color>[
+                      Color(0xfffaf8f8),
+                      Color(0xfffae16c),
+                      Color.fromARGB(128, 250, 148, 75),
                     ],
-                    gradient: LinearGradient(
-                      begin: Alignment.topCenter,
-                      end: Alignment.bottomCenter,
-                      colors: <Color>[
-                        Color(0xfffaf8f8),
-                        Color(0xfffae16c),
-                        Color.fromARGB(128, 250, 148, 75),
-                      ],
-                    ),
                   ),
                 ),
-              ],
+              ),
             ),
             label: Text(
-              '${_masterCardList.length} cards added!     ',
+              ' ${_masterCardList.length} cards added!    ',
               style: const TextStyle(
                 fontSize: 24,
                 color: Colors.black,
