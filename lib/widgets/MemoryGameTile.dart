@@ -149,12 +149,14 @@ class _MemoryGameTileState extends State<MemoryGameTile>
           child: Padding(
             padding: const EdgeInsets.all(16),
             child: GridTile(
-              header: Text(
-                widget.card.name,
-                textAlign: TextAlign.center,
-              ),
+              header: widget.isQuestion
+                  ? Text(
+                      widget.card.name,
+                      textAlign: TextAlign.center,
+                    )
+                  : null,
               child: Padding(
-                padding: const EdgeInsets.only(top: 16),
+                padding: EdgeInsets.only(top: (widget.isQuestion ? 16 : 0)),
                 child: Center(
                   child: AutoSizeText(
                     widget.data,
@@ -162,6 +164,7 @@ class _MemoryGameTileState extends State<MemoryGameTile>
                       fontWeight: FontWeight.bold,
                       fontSize: 30,
                     ),
+                    wrapWords: false,
                     textAlign: TextAlign.center,
                   ),
                 ),
