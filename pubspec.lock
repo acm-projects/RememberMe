@@ -8,6 +8,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "1.0.2"
+  animate_gradient:
+    dependency: "direct main"
+    description:
+      name: animate_gradient
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "0.0.2"
   animations:
     dependency: "direct main"
     description:
@@ -268,6 +275,13 @@ packages:
     description: flutter
     source: sdk
     version: "0.0.0"
+  font_awesome_flutter:
+    dependency: "direct main"
+    description:
+      name: font_awesome_flutter
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "10.2.1"
   http:
     dependency: transitive
     description:
@@ -589,7 +603,7 @@ packages:
     source: hosted
     version: "3.0.6"
   vector_math:
-    dependency: transitive
+    dependency: "direct main"
     description:
       name: vector_math
       url: "https://pub.dartlang.org"
