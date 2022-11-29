@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:rememberme/controllers/MemoryGameController.dart';
+import 'package:rememberme/screens/EndScreen.dart';
 import 'package:rememberme/services/deckservice.dart';
 import 'package:rememberme/widgets/MemoryGameTile.dart';
+import 'package:rememberme/screens/EndScreen.dart';
 
 class MemoryGame extends StatefulWidget {
   const MemoryGame({super.key, required this.deck});
@@ -107,5 +109,6 @@ class _MemoryGameState extends State<MemoryGame> {
 
   void onGameEnd() {
     // add end game logic here
+    Navigator.of(context).push(MaterialPageRoute(builder: (context)=>EndPage(m: _controller)));
   }
 }
