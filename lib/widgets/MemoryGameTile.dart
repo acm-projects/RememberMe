@@ -179,6 +179,8 @@ class _MemoryGameTileState extends State<MemoryGameTile>
   @override
   void dispose() {
     _selectAnimationController.dispose();
+    _colorAnimationController.dispose();
+    _fadeAnimationController.dispose();
     super.dispose();
   }
 }
