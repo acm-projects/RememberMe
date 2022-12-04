@@ -7,7 +7,10 @@ import 'package:rememberme/services/deckservice.dart';
 import 'package:rememberme/widgets/cardavatar.dart';
 
 class DeckCarousel extends StatefulWidget {
-  const DeckCarousel({super.key});
+  const DeckCarousel({super.key, required this.decks, this.onChange});
+
+  final List<Deck> decks;
+  final void Function()? onChange;
 
   @override
   State<DeckCarousel> createState() => _DeckCarouselState();
@@ -17,12 +20,10 @@ class _DeckCarouselState extends State<DeckCarousel> {
   double _scrollValue = -1;
   int _lastFullScroll = -1;
   int _currentPage = 0;
-  List<Deck> _decks = [];
 
   @override
   void initState() {
     super.initState();
-    _updateDecks();
   }
 
   @override
@@ -60,7 +61,7 @@ class _DeckCarouselState extends State<DeckCarousel> {
 
   List<Widget> _getCarouselItems() {
     double percent = sin(pi * (_scrollValue - _lastFullScroll)).abs();
-    return _decks
+    return widget.decks
         .map(
           (deck) => _CarouselItem(
             percent: percent,
@@ -71,19 +72,13 @@ class _DeckCarouselState extends State<DeckCarousel> {
                   builder: (context) => DeckView(initialDeck: deck),
                 ),
               );
-              _updateDecks();
+              if (widget.onChange != null) {
+                widget.onChange!();
+              }
             },
           ),
         )
         .toList();
-  }
-
-  _updateDecks() {
-    DeckService.getAllDecks().then((value) {
-      setState(() {
-        _decks = value;
-      });
-    });
   }
 }
 

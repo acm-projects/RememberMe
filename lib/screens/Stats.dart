@@ -15,6 +15,7 @@ class _Stats extends State<Stats> {
   final Future<Deck> deckFuture = DeckService.getMasterDeck();
   final Future<List<Deck>> allDeckFuture = DeckService.getAllDecks();
   final Future<int> date = UserService.getDaysLogged();
+  final Future<int> highScore = UserService.getMemoryGameHighScore();
 
   @override
   Widget build(BuildContext context) {
@@ -96,10 +97,20 @@ class _Stats extends State<Stats> {
                   );
                 }
               }),
-          const CustomStats(
-            titleText: "High Score Today",
-            achievement: "Memory Game: 100%",
-          ),
+          FutureBuilder(
+              future: highScore,
+              builder: (ctxt, snapshot) {
+                if (snapshot.hasData) {
+                  return CustomStats(
+                    titleText: "High Score",
+                    achievement: "${snapshot.data}%",
+                  );
+                } else {
+                  return const Center(
+                    child: CircularProgressIndicator(),
+                  );
+                }
+              }),
         ],
       ),
     );

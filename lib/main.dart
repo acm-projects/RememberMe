@@ -1,19 +1,18 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
-import 'package:rememberme/screens/Stats.dart';
 import 'package:rememberme/screens/homescreen.dart';
 import 'package:rememberme/screens/login-signup.dart';
-import 'package:rememberme/screens/profile.dart';
 import 'package:rememberme/services/authservice.dart';
+import 'package:rememberme/services/userservice.dart';
 import 'firebase_options.dart';
-import 'package:rememberme/screens/modifycard.dart';
-import 'Screens/MemorySelect.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
+
+  UserService.updateUserLoginDate();
 
   runApp(MyApp());
 }

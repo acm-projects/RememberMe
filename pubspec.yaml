@@ -46,7 +46,6 @@ dependencies:
   firebase_storage: ^10.3.11
   image_picker: ^0.8.6
   cached_network_image: ^3.2.2
-  animations: ^2.0.7
   page_transition: ^2.0.9
   auto_size_text: ^3.0.0
   flutter_staggered_grid_view: ^0.6.2
@@ -56,7 +55,6 @@ dependencies:
   crypto: ^3.0.2
   file: ^6.1.4
   animate_gradient: ^0.0.2
-  vector_math: ^2.1.2
   font_awesome_flutter: ^10.2.1
 
 dev_dependencies:
@@ -86,7 +84,6 @@ flutter:
     - assets/OrangeFlower.jpg
     - assets/avatar.webp
     - assets/logo.png
-    - assets/human-brain.png
 
 
   # An image asset can refer to one or more resolution-specific "variants", see

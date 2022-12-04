@@ -89,4 +89,19 @@ class UserService {
       return null;
     }
   }
+
+  static Future<void> setMemoryGameHighScore(int score) async {
+    var ref = await getUserDocRef();
+    await ref.set({'memorygame_highscore': score});
+  }
+
+  static Future<int> getMemoryGameHighScore() async {
+    var res = await getUserDocRef().get();
+    var data = res.data();
+    if (data == null || !data.containsKey('memorygame_highscore')) {
+      return 0;
+    } else {
+      return data['memorygame_highscore'] as int;
+    }
+  }
 }
