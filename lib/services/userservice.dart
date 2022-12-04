@@ -47,7 +47,7 @@ class UserService {
     }
 
     await getUserDocRef()
-        .set({'lastlogin': currenttime, 'dayslogged': dayslogged});
+        .update({'lastlogin': currenttime, 'dayslogged': dayslogged});
     return dayslogged;
   }
 
@@ -92,7 +92,7 @@ class UserService {
 
   static Future<void> setMemoryGameHighScore(int score) async {
     var ref = await getUserDocRef();
-    await ref.set({'memorygame_highscore': score});
+    await ref.update({'memorygame_highscore': score});
   }
 
   static Future<int> getMemoryGameHighScore() async {
