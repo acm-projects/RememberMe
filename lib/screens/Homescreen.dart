@@ -12,7 +12,6 @@ import 'package:rememberme/services/cardservice.dart';
 import 'package:rememberme/services/deckservice.dart';
 import 'package:rememberme/widgets/MemoryGameButton.dart';
 import 'package:rememberme/widgets/deckcarousel.dart';
-import 'package:rememberme/widgets/memorygameselectdialog.dart';
 import 'package:rememberme/widgets/roundedpage.dart';
 import 'package:icon_decoration/icon_decoration.dart';
 import 'package:rememberme/widgets/useravatar.dart';
@@ -26,15 +25,12 @@ class Homepage extends StatefulWidget {
 
 class _HomepageState extends State<Homepage> {
   List<PersonCard> _masterCardList = [];
+  List<Deck> _decks = [];
 
   @override
   void initState() {
     super.initState();
-    DeckService.getMasterDeck().then((value) {
-      setState(() {
-        _masterCardList = value.cards;
-      });
-    });
+    _update();
   }
 
   @override
@@ -53,43 +49,63 @@ class _HomepageState extends State<Homepage> {
             labelStyle: TextStyle(fontSize: 22),
             child: const Icon(Icons.note_add,
                 size: 30, color: Color.fromRGBO(239, 119, 55, 1.0)),
-            onTap: () => Navigator.of(context).push(
-              MaterialPageRoute(builder: (_) => const ModifyCard()),
-            ),
+            onTap: () async {
+              await Navigator.of(context).push(
+                MaterialPageRoute(builder: (_) => const ModifyCard()),
+              );
+              await _update();
+            },
           ),
           SpeedDialChild(
             label: 'New Deck',
             labelStyle: TextStyle(fontSize: 22),
             child: const Icon(Icons.collections_bookmark,
                 size: 30, color: Color.fromRGBO(239, 119, 55, 1.0)),
-            onTap: () => Navigator.of(context).push(
-              MaterialPageRoute(builder: (_) => const ModifyDeck()),
-            ),
+            onTap: () async {
+              await Navigator.of(context).push(
+                MaterialPageRoute(builder: (_) => const ModifyDeck()),
+              );
+              await _update();
+            },
           ),
           SpeedDialChild(
             label: 'QR Code',
             labelStyle: TextStyle(fontSize: 22),
             child: const Icon(Icons.qr_code_outlined,
                 size: 30, color: Color.fromRGBO(239, 119, 55, 1.0)),
-            onTap: () => Navigator.of(context).push(
-              MaterialPageRoute(builder: (_) => const QRScan()),
-            ),
-            onLongPress: () => Navigator.of(context).push(
-              MaterialPageRoute(builder: (_) => const QRView()),
-            ),
+            onTap: () async {
+              await Navigator.of(context).push(
+                MaterialPageRoute(builder: (_) => const QRScan()),
+              );
+              await _update();
+            },
+            onLongPress: () async {
+              await Navigator.of(context).push(
+                MaterialPageRoute(builder: (_) => const QRView()),
+              );
+              await _update();
+            },
           ),
         ],
       ),
       appBarActions: [
         IconButton(
-          onPressed: () {
+          onPressed: () async {
             // method to show the search bar
-            showSearch(
+            var res = await showSearch<PersonCard?>(
                 context: context,
                 // delegate to customize the search bar
                 delegate: _CustomSearchDelegate(
                   cards: _masterCardList,
                 ));
+            if (res != null && mounted) {
+              await Navigator.of(context).push(MaterialPageRoute(
+                builder: (context) => ModifyCard(
+                  existingCard: res,
+                ),
+              ));
+            }
+            await _update();
           },
           icon: const Icon(Icons.search),
         )
@@ -120,38 +136,36 @@ class _HomepageState extends State<Homepage> {
                 MaterialPageRoute(builder: (context) => const Stats()),
               );
             },
-            icon: Stack(
-              alignment: AlignmentDirectional.center,
-              children: const [
-                Icon(
-                  Icons.circle,
-                  size: 70,
-                  color: Color.fromARGB(90, 60, 200, 10),
-                ),
-                DecoratedIcon(
-                  icon: Icon(Icons.star, size: 30, color: Colors.yellow),
-                  decoration: IconDecoration(
-                    shadows: [
-                      Shadow(
-                          blurRadius: 30,
-                          offset: Offset(1, 0),
-                          color: Colors.brown)
+            icon: Container(
+              padding: const EdgeInsets.all(12),
+              decoration: const BoxDecoration(
+                color: Color.fromARGB(70, 60, 200, 10),
+                shape: BoxShape.circle,
+              ),
+              child: const DecoratedIcon(
+                icon: Icon(Icons.star, size: 35, color: Colors.yellow),
+                decoration: IconDecoration(
+                  shadows: [
+                    Shadow(
+                      blurRadius: 20,
+                      offset: Offset(1, 0),
+                      color: Colors.brown,
+                    )
+                  ],
+                  gradient: LinearGradient(
+                    begin: Alignment.topCenter,
+                    end: Alignment.bottomCenter,
+                    colors: <Color>[
+                      Color(0xfffaf8f8),
+                      Color(0xfffae16c),
+                      Color.fromARGB(128, 250, 148, 75),
                     ],
-                    gradient: LinearGradient(
-                      begin: Alignment.topCenter,
-                      end: Alignment.bottomCenter,
-                      colors: <Color>[
-                        Color(0xfffaf8f8),
-                        Color(0xfffae16c),
-                        Color.fromARGB(128, 250, 148, 75),
-                      ],
-                    ),
                   ),
                 ),
-              ],
+              ),
             ),
             label: Text(
-              '${_masterCardList.length} cards added!     ',
+              ' ${_masterCardList.length} cards added!    ',
               style: const TextStyle(
                 fontSize: 24,
                 color: Colors.black,
@@ -176,7 +190,10 @@ class _HomepageState extends State<Homepage> {
           ),
 
           //THIS IS TO SET UP THE CAROUSEL
-          const DeckCarousel(),
+          DeckCarousel(
+            decks: _decks,
+            onChange: () => _update(),
+          ),
 
           Container(
             margin: const EdgeInsets.only(bottom: 60),
@@ -187,9 +204,17 @@ class _HomepageState extends State<Homepage> {
       ),
     );
   }
+
+  _update() async {
+    var decks = await DeckService.getAllDecks();
+    setState(() {
+      _decks = decks;
+      _masterCardList = decks.firstWhere((i) => i.isMaster).cards;
+    });
+  }
 }
 
-class _CustomSearchDelegate extends SearchDelegate {
+class _CustomSearchDelegate extends SearchDelegate<PersonCard?> {
   final List<PersonCard> cards;
 
   _CustomSearchDelegate({required this.cards});
@@ -246,11 +271,7 @@ class _CustomSearchDelegate extends SearchDelegate {
         var result = matchQuery[index];
         return ListTile(
           title: Text(result.name),
-          onTap: () => Navigator.of(context).pushReplacement(
-            MaterialPageRoute(
-              builder: (context) => CardView(initialCard: result),
-            ),
-          ),
+          onTap: () => Navigator.of(context).pop(result),
         );
       },
     );

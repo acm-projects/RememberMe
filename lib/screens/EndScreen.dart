@@ -3,6 +3,7 @@ import 'package:rememberme/controllers/MemoryGameController.dart';
 import 'package:rememberme/screens/Homescreen.dart';
 import 'package:rememberme/screens/MemoryGame.dart';
 import 'package:rememberme/controllers/MemoryGameController.dart';
+import 'package:rememberme/services/userservice.dart';
 import '../widgets/memorygameselectdialog.dart';
 
 class EndPage extends StatefulWidget {
@@ -15,12 +16,21 @@ class EndPage extends StatefulWidget {
 }
 
 class _EndPageState extends State<EndPage> {
+  late int correct;
+  late int wrong;
+  late int accuracy;
+
+  @override
+  void initState() {
+    super.initState();
+    correct = widget.m.correctGuesses;
+    wrong = widget.m.wrongGuesses;
+    accuracy = (correct / (correct + wrong) * 100).round();
+    UserService.setMemoryGameHighScore(accuracy);
+  }
+
   @override
   Widget build(BuildContext context) {
-    int correct = widget.m.correctGuesses;
-    int wrong = widget.m.wrongGuesses;
-    int accuracy = (((wrong - correct).abs() / correct) * 100).round();
-
     return Scaffold(
         body: Padding(
       padding: const EdgeInsets.all(40),
@@ -75,7 +85,7 @@ class _EndPageState extends State<EndPage> {
                 Padding(
                   padding: const EdgeInsets.fromLTRB(20, 30, 20, 10),
                   child: Text(
-                    'Accuarcy:          ${accuracy}%',
+                    'Accuracy:          ${accuracy}%',
                     style: TextStyle(
                       color: Colors.black,
                       fontSize: 25,

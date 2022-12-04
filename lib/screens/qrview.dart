@@ -1,3 +1,4 @@
+import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
 import 'package:qr_flutter/qr_flutter.dart';
 import 'package:rememberme/screens/modifycard.dart';
@@ -34,12 +35,14 @@ class _QRViewState extends State<QRView> {
                   ),
                 ),
                 Flexible(
-                  child: Text(
+                  child: AutoSizeText(
                     'Nice to Meet You! I\'m ${AuthService.getUser()?.displayName}.',
+                    maxLines: 3,
+                    maxFontSize: 28,
                     style: const TextStyle(
-                      fontSize: 36,
                       fontWeight: FontWeight.bold,
                       color: Colors.white,
+                      fontSize: 28,
                     ),
                   ),
                 ),

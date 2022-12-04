@@ -47,7 +47,7 @@ class UserService {
     }
 
     await getUserDocRef()
-        .set({'lastlogin': currenttime, 'dayslogged': dayslogged});
+        .update({'lastlogin': currenttime, 'dayslogged': dayslogged});
     return dayslogged;
   }
 
@@ -87,6 +87,21 @@ class UserService {
       return img;
     } on Exception catch (_) {
       return null;
+    }
+  }
+
+  static Future<void> setMemoryGameHighScore(int score) async {
+    var ref = await getUserDocRef();
+    await ref.update({'memorygame_highscore': score});
+  }
+
+  static Future<int> getMemoryGameHighScore() async {
+    var res = await getUserDocRef().get();
+    var data = res.data();
+    if (data == null || !data.containsKey('memorygame_highscore')) {
+      return 0;
+    } else {
+      return data['memorygame_highscore'] as int;
     }
   }
 }
